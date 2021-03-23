@@ -27,6 +27,7 @@
         "laravel-json-api/core": "dev-non-eloquent"
     },
     "require-dev": {
+        "orchestra/testbench": "^6.15",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
@@ -36,7 +37,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LaravelJsonApi\\NonEloquent\\Tests\\": "tests/"
+            "App\\": "tests/app",
+            "LaravelJsonApi\\NonEloquent\\Tests\\": "tests/lib"
         }
     },
     "extra": {

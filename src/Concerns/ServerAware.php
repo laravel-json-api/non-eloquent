@@ -17,47 +17,40 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Defaults;
+namespace LaravelJsonApi\NonEloquent\Concerns;
 
 use LaravelJsonApi\Contracts\Server\Server;
-use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryToMany as BaseCapability;
 
-final class QueryToMany extends BaseCapability
+trait ServerAware
 {
 
     /**
-     * @var Repository
+     * @var Server|null
      */
-    private Repository $repository;
+    private ?Server $server = null;
 
     /**
-     * @var Server
-     */
-    private Server $server;
-
-    /**
-     * QueryToMany constructor.
+     * Inject the server into the repository.
      *
-     * @param Repository $repository
      * @param Server $server
+     * @return $this
      */
-    public function __construct(Repository $repository, Server $server)
+    public function withServer(Server $server): self
     {
-        $this->repository = $repository;
         $this->server = $server;
+
+        return $this;
     }
 
     /**
-     * @inheritDoc
+     * @return Server
      */
-    public function get(): iterable
+    protected function server(): Server
     {
-        $resource = $this->server->resources()->create(
-            $this->modelOrFail()
-        );
+        if ($this->server) {
+            return $this->server;
+        }
 
-        return $resource->relationship($this->fieldName)->data();
+        throw new \RuntimeException('No server injected into repository class.');
     }
-
 }

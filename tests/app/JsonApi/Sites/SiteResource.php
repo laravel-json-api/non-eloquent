@@ -17,26 +17,35 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Capabilities;
+namespace App\JsonApi\Sites;
 
-use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use Illuminate\Http\Request;
+use LaravelJsonApi\Core\Resources\JsonApiResource;
 
-abstract class QueryOne extends Capability implements QueryOneBuilder
+class SiteResource extends JsonApiResource
 {
 
-    use HasModelOrResourceId;
-
     /**
-     * @inheritDoc
+     * Get the resource id.
+     *
+     * @return string
      */
-    public function filter(?array $filters): QueryOneBuilder
+    public function id(): string
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
-        $this->queryParameters->setFilters($filters);
-
-        return $this;
+        return $this->resource->getSlug();
     }
 
+    /**
+     * Get the resource's attributes.
+     *
+     * @param Request|null $request
+     * @return iterable
+     */
+    public function attributes($request): iterable
+    {
+        return [
+            'domain' => $this->resource->getDomain(),
+            'name' => $this->resource->getName(),
+        ];
+    }
 }

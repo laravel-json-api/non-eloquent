@@ -17,26 +17,35 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Capabilities;
+namespace App\JsonApi\Sites\Capabilities;
 
-use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use App\Entities\SiteStorage;
+use LaravelJsonApi\NonEloquent\Capabilities\QueryAll as BaseCapability;
 
-abstract class QueryOne extends Capability implements QueryOneBuilder
+class QueryAll extends BaseCapability
 {
 
-    use HasModelOrResourceId;
+    /**
+     * @var SiteStorage
+     */
+    private SiteStorage $sites;
+
+    /**
+     * QueryAll constructor.
+     *
+     * @param SiteStorage $sites
+     */
+    public function __construct(SiteStorage $sites)
+    {
+        $this->sites = $sites;
+    }
 
     /**
      * @inheritDoc
      */
-    public function filter(?array $filters): QueryOneBuilder
+    public function get(): iterable
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
-        $this->queryParameters->setFilters($filters);
-
-        return $this;
+        return $this->sites->get();
     }
 
 }

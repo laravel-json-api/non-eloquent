@@ -17,26 +17,40 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Capabilities;
+namespace LaravelJsonApi\NonEloquent\Concerns;
 
-use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use LaravelJsonApi\Contracts\Schema\Schema;
 
-abstract class QueryOne extends Capability implements QueryOneBuilder
+trait SchemaAware
 {
 
-    use HasModelOrResourceId;
+    /**
+     * @var Schema|null
+     */
+    private ?Schema $schema = null;
 
     /**
-     * @inheritDoc
+     * Inject the schema into the repository.
+     *
+     * @param Schema $schema
+     * @return $this
      */
-    public function filter(?array $filters): QueryOneBuilder
+    public function withSchema(Schema $schema): self
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
-        $this->queryParameters->setFilters($filters);
+        $this->schema = $schema;
 
         return $this;
     }
 
+    /**
+     * @return Schema
+     */
+    protected function schema(): Schema
+    {
+        if ($this->schema) {
+            return $this->schema;
+        }
+
+        throw new \RuntimeException('No schema injected into repository class.');
+    }
 }

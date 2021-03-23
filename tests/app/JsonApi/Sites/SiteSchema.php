@@ -17,42 +17,41 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Defaults;
+namespace App\JsonApi\Sites;
 
-use LaravelJsonApi\Contracts\Server\Server;
+use App\Entities\Site;
 use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryToOne as BaseCapability;
+use LaravelJsonApi\Core\Schema\Schema;
+use LaravelJsonApi\NonEloquent\Fields\Attribute;
 
-final class QueryToOne extends BaseCapability
+class SiteSchema extends Schema
 {
 
     /**
-     * @var Server
+     * The model the schema corresponds to.
+     *
+     * @var string
      */
-    private Server $server;
+    public static string $model = Site::class;
 
     /**
-     * QueryToOne constructor.
-     *
-     * @param Repository $repository
-     * @param Server $server
+     * @inheritDoc
      */
-    public function __construct(Repository $repository, Server $server)
+    public function fields(): iterable
     {
-        $this->withRepository($repository);
-        $this->server = $server;
+        return [
+            Attribute::make('domain'),
+            Attribute::make('name'),
+        ];
     }
 
     /**
      * @inheritDoc
      */
-    public function first(): ?object
+    public function repository(): Repository
     {
-        $resource = $this->server->resources()->create(
-            $this->modelOrFail()
-        );
-
-        return $resource->relationship($this->fieldName)->data();
+        return SiteRepository::make()
+            ->withServer($this->server);
     }
 
 }

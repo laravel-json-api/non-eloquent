@@ -23,9 +23,14 @@ use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Query\QueryParameters;
 use LaravelJsonApi\Contracts\Store\Builder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
+use LaravelJsonApi\NonEloquent\Concerns\SchemaAware;
+use LaravelJsonApi\NonEloquent\Concerns\ServerAware;
 
 abstract class Capability implements Builder
 {
+
+    use ServerAware;
+    use SchemaAware;
 
     /**
      * @var Request|null
@@ -45,6 +50,10 @@ abstract class Capability implements Builder
      */
     public static function make(...$arguments): self
     {
+        if (empty($arguments)) {
+            return app(static::class);
+        }
+
         return new static(...$arguments);
     }
 

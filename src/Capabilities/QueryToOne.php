@@ -19,19 +19,14 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\NonEloquent\Capabilities;
 
-use InvalidArgumentException;
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use function is_object;
-use function is_string;
+use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
 
 abstract class QueryToOne extends Capability implements QueryOneBuilder
 {
 
-    /**
-     * @var string|object
-     */
-    protected $modelOrResourceId;
+    use HasModelOrResourceId;
 
     /**
      * @var string
@@ -45,23 +40,6 @@ abstract class QueryToOne extends Capability implements QueryOneBuilder
     {
         $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setFilters($filters);
-
-        return $this;
-    }
-
-    /**
-     * Set the model or resource id that is being queried.
-     *
-     * @param string|object $modelOrResourceId
-     * @return $this
-     */
-    public function withModelOrResourceId($modelOrResourceId): self
-    {
-        if (!is_string($modelOrResourceId) && !is_object($modelOrResourceId)) {
-            throw new InvalidArgumentException('Expecting a string or object.');
-        }
-
-        $this->modelOrResourceId = $modelOrResourceId;
 
         return $this;
     }

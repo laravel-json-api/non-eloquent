@@ -19,22 +19,30 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\NonEloquent\Capabilities;
 
-use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
+use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
 
-abstract class QueryOne extends Capability implements QueryOneBuilder
+abstract class QueryAll extends Capability implements QueryManyBuilder
 {
-
-    use HasModelOrResourceId;
 
     /**
      * @inheritDoc
      */
-    public function filter(?array $filters): QueryOneBuilder
+    public function filter(?array $filters): QueryManyBuilder
     {
         $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setFilters($filters);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function sort($fields): QueryManyBuilder
+    {
+        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
+        $this->queryParameters->setSortFields($fields);
 
         return $this;
     }

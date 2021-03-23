@@ -21,17 +21,9 @@ namespace LaravelJsonApi\NonEloquent\Defaults;
 
 use LaravelJsonApi\Contracts\Store\Repository;
 use LaravelJsonApi\NonEloquent\Capabilities\QueryOne as BaseCapability;
-use RuntimeException;
-use function is_object;
-use function is_string;
 
 final class QueryOne extends BaseCapability
 {
-
-    /**
-     * @var Repository
-     */
-    private Repository $repository;
 
     /**
      * QueryOne constructor.
@@ -40,7 +32,7 @@ final class QueryOne extends BaseCapability
      */
     public function __construct(Repository $repository)
     {
-        $this->repository = $repository;
+        $this->withRepository($repository);
     }
 
     /**
@@ -48,16 +40,11 @@ final class QueryOne extends BaseCapability
      */
     public function first(): ?object
     {
-        if (is_string($this->modelOrResourceId)) {
-            return $this->repository->find($this->modelOrResourceId);
+        if ($this->model) {
+            return $this->model;
         }
 
-        if (is_object($this->modelOrResourceId)) {
-            return $this->modelOrResourceId;
-        }
-
-        throw new RuntimeException('Expecting model or resource id to be set.');
+        return $this->model();
     }
-
 
 }
