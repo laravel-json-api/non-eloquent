@@ -24,7 +24,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "laravel-json-api/core": "^1.0.0-beta.1"
+        "laravel-json-api/core": "dev-non-eloquent"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
