@@ -17,30 +17,35 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Defaults;
+namespace App\JsonApi\Sites\Capabilities;
 
-use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryOne as BaseCapability;
+use App\Entities\SiteStorage;
+use LaravelJsonApi\NonEloquent\Capabilities\QueryAll;
 
-final class QueryOne extends BaseCapability
+class QuerySites extends QueryAll
 {
 
     /**
-     * QueryOne constructor.
-     *
-     * @param Repository $repository
+     * @var SiteStorage
      */
-    public function __construct(Repository $repository)
+    private SiteStorage $sites;
+
+    /**
+     * QueryAll constructor.
+     *
+     * @param SiteStorage $sites
+     */
+    public function __construct(SiteStorage $sites)
     {
-        $this->withRepository($repository);
+        $this->sites = $sites;
     }
 
     /**
      * @inheritDoc
      */
-    public function first(): ?object
+    public function get(): iterable
     {
-        return $this->model();
+        return $this->sites->get();
     }
 
 }

@@ -27,10 +27,10 @@ trait SchemaAware
     /**
      * @var Schema|null
      */
-    private ?Schema $schema = null;
+    protected ?Schema $schema = null;
 
     /**
-     * Inject the schema into the repository.
+     * Inject the schema.
      *
      * @param Schema $schema
      * @return $this
@@ -38,6 +38,21 @@ trait SchemaAware
     public function withSchema(Schema $schema): self
     {
         $this->schema = $schema;
+
+        return $this;
+    }
+
+    /**
+     * Inject the schema, if it is provided.
+     *
+     * @param Schema|null $schema
+     * @return $this
+     */
+    public function maybeWithSchema(?Schema $schema): self
+    {
+        if ($schema) {
+            $this->schema = $schema;
+        }
 
         return $this;
     }

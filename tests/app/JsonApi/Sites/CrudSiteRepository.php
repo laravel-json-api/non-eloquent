@@ -17,30 +17,45 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Defaults;
+namespace App\JsonApi\Sites;
 
-use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryOne as BaseCapability;
+use App\Entities\SiteStorage;
+use LaravelJsonApi\NonEloquent\Capabilities\Crud;
+use LaravelJsonApi\NonEloquent\CrudRepository;
+use App\JsonApi\Sites\Capabilities\CrudSite;
 
-final class QueryOne extends BaseCapability
+class CrudSiteRepository extends CrudRepository
 {
 
     /**
-     * QueryOne constructor.
-     *
-     * @param Repository $repository
+     * @var SiteStorage
      */
-    public function __construct(Repository $repository)
+    private SiteStorage $storage;
+
+    /**
+     * CrudSiteRepository constructor.
+     *
+     * @param SiteStorage $storage
+     */
+    public function __construct(SiteStorage $storage)
     {
-        $this->withRepository($repository);
+        $this->storage = $storage;
     }
 
     /**
      * @inheritDoc
      */
-    public function first(): ?object
+    public function find(string $resourceId): ?object
     {
-        return $this->model();
+        return $this->storage->find($resourceId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function crud(): Crud
+    {
+        return CrudSite::make($this->storage);
     }
 
 }

@@ -27,10 +27,10 @@ trait ServerAware
     /**
      * @var Server|null
      */
-    private ?Server $server = null;
+    protected ?Server $server = null;
 
     /**
-     * Inject the server into the repository.
+     * Inject the server.
      *
      * @param Server $server
      * @return $this
@@ -38,6 +38,21 @@ trait ServerAware
     public function withServer(Server $server): self
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    /**
+     * Inject the server, if it is provided.
+     *
+     * @param Server|null $server
+     * @return $this
+     */
+    public function maybeWithServer(?Server $server): self
+    {
+        if ($server) {
+            $this->server = $server;
+        }
 
         return $this;
     }

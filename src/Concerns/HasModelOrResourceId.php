@@ -110,4 +110,14 @@ trait HasModelOrResourceId
 
         throw new \RuntimeException('Unable to resolve model: missing resource id and/or repository.');
     }
+
+    /**
+     * Is there a model?
+     *
+     * @return bool
+     */
+    protected function hasModel(): bool
+    {
+        return is_object($this->model) || is_string($this->resourceId);
+    }
 }

@@ -19,33 +19,43 @@ declare(strict_types=1);
 
 namespace App\JsonApi\Sites\Capabilities;
 
+use App\Entities\Site;
 use App\Entities\SiteStorage;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryAll as BaseCapability;
+use LaravelJsonApi\NonEloquent\Capabilities\CreateResource;
 
-class QueryAll extends BaseCapability
+class CreateSite extends CreateResource
 {
 
     /**
      * @var SiteStorage
      */
-    private SiteStorage $sites;
+    private SiteStorage $storage;
 
     /**
-     * QueryAll constructor.
+     * CreateSite constructor.
      *
-     * @param SiteStorage $sites
+     * @param SiteStorage $storage
      */
-    public function __construct(SiteStorage $sites)
+    public function __construct(SiteStorage $storage)
     {
-        $this->sites = $sites;
+        $this->storage = $storage;
     }
 
     /**
-     * @inheritDoc
+     * Create a new site.
+     *
+     * @param array $validatedData
+     * @return Site
      */
-    public function get(): iterable
+    public function create(array $validatedData): Site
     {
-        return $this->sites->get();
+        $site = new Site($validatedData['slug']);
+        $site->setDomain($validatedData['domain'] ?? null);
+        $site->setName($validatedData['name'] ?? null);
+
+        $this->storage->store($site);
+
+        return $site;
     }
 
 }

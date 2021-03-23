@@ -17,61 +17,44 @@
 
 declare(strict_types=1);
 
-namespace App\JsonApi\Sites;
+namespace LaravelJsonApi\NonEloquent;
 
-use App\Entities\SiteStorage;
 use LaravelJsonApi\Contracts\Store\CreatesResources;
 use LaravelJsonApi\Contracts\Store\DeletesResources;
-use LaravelJsonApi\Contracts\Store\QueriesAll;
-use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
+use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\ResourceBuilder;
 use LaravelJsonApi\Contracts\Store\UpdatesResources;
-use LaravelJsonApi\NonEloquent\AbstractRepository;
+use LaravelJsonApi\NonEloquent\Capabilities\Crud;
 
-class SiteRepository extends AbstractRepository implements
-    QueriesAll,
+abstract class CrudRepository extends AbstractRepository implements
     CreatesResources,
     UpdatesResources,
     DeletesResources
 {
 
     /**
-     * @var SiteStorage
-     */
-    private SiteStorage $storage;
-
-    /**
-     * SiteRepository constructor.
+     * Get the CRUD capability.
      *
-     * @param SiteStorage $storage
+     * @return Crud
      */
-    public function __construct(SiteStorage $storage)
-    {
-        $this->storage = $storage;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function find(string $resourceId): ?object
-    {
-        return $this->storage->find($resourceId);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function queryAll(): QueryManyBuilder
-    {
-        return Capabilities\QuerySites::make();
-    }
+    abstract protected function crud(): Crud;
 
     /**
      * @inheritDoc
      */
     public function create(): ResourceBuilder
     {
-        return Capabilities\CreateSite::make();
+        return $this->usingCrud();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function queryOne($modelOrResourceId): QueryOneBuilder
+    {
+        return $this
+            ->usingCrud()
+            ->withModelOrResourceId($modelOrResourceId);
     }
 
     /**
@@ -79,8 +62,8 @@ class SiteRepository extends AbstractRepository implements
      */
     public function update($modelOrResourceId): ResourceBuilder
     {
-        return Capabilities\ModifySite::make()
-            ->withRepository($this)
+        return $this
+            ->usingCrud()
             ->withModelOrResourceId($modelOrResourceId);
     }
 
@@ -89,7 +72,20 @@ class SiteRepository extends AbstractRepository implements
      */
     public function delete($modelOrResourceId): void
     {
-        $this->storage->remove($modelOrResourceId);
+        $this->usingCrud()
+            ->withModelOrResourceId($modelOrResourceId)
+            ->destroy();
+    }
+
+    /**
+     * @return Crud
+     */
+    private function usingCrud(): Crud
+    {
+        return $this->crud()
+            ->maybeWithServer($this->server)
+            ->maybeWithSchema($this->schema)
+            ->withRepository($this);
     }
 
 }

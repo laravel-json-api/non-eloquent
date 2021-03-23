@@ -17,30 +17,29 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Defaults;
+namespace LaravelJsonApi\NonEloquent\Capabilities;
 
-use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryOne as BaseCapability;
+use LaravelJsonApi\Contracts\Store\ResourceBuilder;
+use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use LogicException;
 
-final class QueryOne extends BaseCapability
+abstract class ModifyResource extends Capability implements ResourceBuilder
 {
 
-    /**
-     * QueryOne constructor.
-     *
-     * @param Repository $repository
-     */
-    public function __construct(Repository $repository)
-    {
-        $this->withRepository($repository);
-    }
+    use HasModelOrResourceId;
 
     /**
      * @inheritDoc
      */
-    public function first(): ?object
+    public function store(array $validatedData): object
     {
-        return $this->model();
+        $model = $this->modelOrFail();
+
+        if (method_exists($this, 'update')) {
+            return $this->update($model, $validatedData) ?: $model;
+        }
+
+        throw new LogicException('Unable to modify resource as the update method is not implemented.');
     }
 
 }

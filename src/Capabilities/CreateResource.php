@@ -17,30 +17,24 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Defaults;
+namespace LaravelJsonApi\NonEloquent\Capabilities;
 
-use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\NonEloquent\Capabilities\QueryOne as BaseCapability;
+use LaravelJsonApi\Contracts\Store\ResourceBuilder;
+use LogicException;
 
-final class QueryOne extends BaseCapability
+abstract class CreateResource extends Capability implements ResourceBuilder
 {
-
-    /**
-     * QueryOne constructor.
-     *
-     * @param Repository $repository
-     */
-    public function __construct(Repository $repository)
-    {
-        $this->withRepository($repository);
-    }
 
     /**
      * @inheritDoc
      */
-    public function first(): ?object
+    public function store(array $validatedData): object
     {
-        return $this->model();
+        if (method_exists($this, 'create')) {
+            return $this->create($validatedData);
+        }
+
+        throw new LogicException('Unable to create a resource as the create method is not implemented.');
     }
 
 }

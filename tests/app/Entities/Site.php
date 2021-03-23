@@ -19,7 +19,6 @@ namespace App\Entities;
 
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
-use function array_key_exists;
 
 class Site implements Arrayable
 {
@@ -49,7 +48,8 @@ class Site implements Arrayable
     public static function fromArray(string $slug, array $values)
     {
         $site = new self($slug);
-        $site->exchangeArray($values);
+        $site->setDomain($values['domain'] ?? null);
+        $site->setName($values['name'] ?? null);
 
         return $site;
     }
@@ -122,25 +122,6 @@ class Site implements Arrayable
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    /**
-     * Set values using an array.
-     *
-     * @param array $values
-     * @return $this
-     */
-    public function exchangeArray(array $values): self
-    {
-        if (array_key_exists('domain', $values)) {
-            $this->setDomain($values['domain']);
-        }
-
-        if (array_key_exists('name', $values)) {
-            $this->setName($values['name']);
-        }
-
-        return $this;
     }
 
     /**
