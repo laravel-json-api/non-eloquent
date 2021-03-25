@@ -21,26 +21,40 @@ use Countable;
 use Generator;
 use Illuminate\Support\LazyCollection;
 use InvalidArgumentException;
-use LogicException;
-use function is_array;
 use function iterator_to_array;
 
 class SiteStorage implements Countable
 {
 
     /**
+     * @var UserStorage
+     */
+    private UserStorage $users;
+
+    /**
+     * @var TagStorage
+     */
+    private TagStorage $tags;
+
+    /**
      * @var array
      */
-    private array $sites = [];
+    private array $sites;
 
     /**
      * SiteStorage constructor.
      *
+     * @param UserStorage $users
+     * @param TagStorage $tags
      * @param array $sites
      */
-    public function __construct(array $sites = [])
+    public function __construct(UserStorage $users, TagStorage $tags, array $sites = [])
     {
-        $this->load($sites);
+        $this->users = $users;
+        $this->tags = $tags;
+        $this->sites = $sites;
+
+        ksort($this->sites);
     }
 
     /**
@@ -52,7 +66,7 @@ class SiteStorage implements Countable
     public function find(string $slug): ?Site
     {
         if (isset($this->sites[$slug])) {
-            return Site::fromArray($slug, $this->sites[$slug]);
+            return $this->make($slug, $this->sites[$slug]);
         }
 
         return null;
@@ -75,7 +89,8 @@ class SiteStorage implements Countable
     public function cursor(): Generator
     {
         foreach ($this->sites as $slug => $values) {
-            yield $slug => Site::fromArray($slug, $values);
+            $site = $this->make($slug, $values);
+            yield $slug => $site;
         }
     }
 
@@ -143,28 +158,25 @@ class SiteStorage implements Countable
     }
 
     /**
-     * Load sites into the repository.
+     * Make a new site.
      *
-     * @param iterable $sites
-     * @return void
+     * @param string $slug
+     * @param array $values
+     * @return Site
      */
-    private function load(iterable $sites): void
+    private function make(string $slug, array $values): Site
     {
-        foreach ($sites as $slug => $values) {
-            if ($values instanceof Site) {
-                $this->sites[$values->getSlug()] = $values->toArray();
-                continue;
-            }
+        $site = Site::fromArray($slug, $values);
 
-            if (is_array($values)) {
-                $this->sites[$slug] = $values;
-                continue;
-            }
-
-            throw new LogicException('Expecting an iterable of sites entities or array values.');
+        if (isset($values['owner_id'])) {
+            $site->setOwner($this->users->find($values['owner_id']));
         }
 
-        ksort($this->sites);
+        if (isset($values['tag_ids']) && is_array($values['tag_ids'])) {
+            $site->setTags(...$this->tags->findMany($values['tag_ids']));
+        }
+
+        return $site;
     }
 
 }

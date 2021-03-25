@@ -94,7 +94,7 @@ abstract class AbstractRepository implements Repository, QueriesOne, QueriesToOn
      */
     public function queryToOne($modelOrResourceId, string $fieldName): QueryOneBuilder
     {
-        return Defaults\QueryToOne::make($this, $this->server())
+        return Defaults\QueryToOne::make($this->server(), $this)
             ->withModelOrResourceId($modelOrResourceId)
             ->withFieldName($fieldName);
     }
@@ -104,7 +104,7 @@ abstract class AbstractRepository implements Repository, QueriesOne, QueriesToOn
      */
     public function queryToMany($modelOrResourceId, string $fieldName): QueryManyBuilder
     {
-        return Defaults\QueryToMany::make($this, $this->server())
+        return Defaults\QueryToMany::make($this->server(), $this)
             ->withModelOrResourceId($modelOrResourceId)
             ->withFieldName($fieldName);
     }

@@ -48,4 +48,18 @@ class SiteResource extends JsonApiResource
             'name' => $this->resource->getName(),
         ];
     }
+
+    /**
+     * Get the resource's relationships.
+     *
+     * @param Request|null $request
+     * @return iterable
+     */
+    public function relationships($request): iterable
+    {
+        return [
+            $this->relation('owner')->withData($this->resource->getOwner()),
+            $this->relation('tags')->withData($this->resource->getTags()),
+        ];
+    }
 }

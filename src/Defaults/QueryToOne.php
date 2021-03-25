@@ -27,20 +27,15 @@ final class QueryToOne extends BaseCapability
 {
 
     /**
-     * @var Server
-     */
-    private Server $server;
-
-    /**
      * QueryToOne constructor.
      *
-     * @param Repository $repository
      * @param Server $server
+     * @param Repository $repository
      */
-    public function __construct(Repository $repository, Server $server)
+    public function __construct(Server $server, Repository $repository)
     {
+        $this->withServer($server);
         $this->withRepository($repository);
-        $this->server = $server;
     }
 
     /**

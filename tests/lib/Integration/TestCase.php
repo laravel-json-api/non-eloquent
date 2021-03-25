@@ -20,9 +20,14 @@ declare(strict_types=1);
 namespace LaravelJsonApi\NonEloquent\Tests\Integration;
 
 use App\Entities\SiteStorage;
+use App\Entities\TagStorage;
+use App\Entities\UserStorage;
 use App\JsonApi\Sites\SiteSchema;
+use LaravelJsonApi\Contracts\Resources\Container as ResourceContainerContract;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainerContract;
 use LaravelJsonApi\Contracts\Store\Store as StoreContract;
+use LaravelJsonApi\Core\Resources\Container as ResourceContainer;
+use LaravelJsonApi\Core\Resources\Factory;
 use LaravelJsonApi\Core\Schema\Container as SchemaContainer;
 use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Core\Store\Store;
@@ -39,7 +44,17 @@ class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->app->singleton(SiteStorage::class, fn() => new SiteStorage(
+            $this->app->make(UserStorage::class),
+            $this->app->make(TagStorage::class),
             require __DIR__ . '/../../sites.php'
+        ));
+
+        $this->app->singleton(UserStorage::class, fn() => new UserStorage(
+            require __DIR__ . '/../../users.php'
+        ));
+
+        $this->app->singleton(TagStorage::class, fn() => new TagStorage(
+            require __DIR__ . '/../../tags.php'
         ));
 
         $this->app->singleton(
@@ -52,6 +67,7 @@ class TestCase extends BaseTestCase
         $this->app->singleton(Server::class, function () {
             $server = $this->createMock(Server::class);
             $server->method('schemas')->willReturnCallback(fn() => $this->schemas());
+            $server->method('resources')->willReturnCallback(fn() => $this->resources());
             return $server;
         });
 
@@ -64,6 +80,16 @@ class TestCase extends BaseTestCase
     protected function schemas(): SchemaContainerContract
     {
         return $this->app->make(SchemaContainerContract::class);
+    }
+
+    /**
+     * @return ResourceContainerContract
+     */
+    protected function resources(): ResourceContainerContract
+    {
+        $factory = new Factory($this->schemas());
+
+        return new ResourceContainer($factory);
     }
 
     /**

@@ -27,25 +27,15 @@ final class QueryToMany extends BaseCapability
 {
 
     /**
-     * @var Repository
-     */
-    private Repository $repository;
-
-    /**
-     * @var Server
-     */
-    private Server $server;
-
-    /**
      * QueryToMany constructor.
      *
-     * @param Repository $repository
      * @param Server $server
+     * @param Repository $repository
      */
-    public function __construct(Repository $repository, Server $server)
+    public function __construct(Server $server, Repository $repository)
     {
-        $this->repository = $repository;
-        $this->server = $server;
+        $this->withServer($server);
+        $this->withRepository($repository);
     }
 
     /**

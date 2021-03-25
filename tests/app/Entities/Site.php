@@ -39,6 +39,16 @@ class Site implements Arrayable
     private ?string $name;
 
     /**
+     * @var User|null
+     */
+    private ?User $owner = null;
+
+    /**
+     * @var Tag[]
+     */
+    private array $tags = [];
+
+    /**
      * Create a new site entity from an array.
      *
      * @param string $slug
@@ -125,14 +135,82 @@ class Site implements Arrayable
     }
 
     /**
+     * @param User|null $user
+     * @return $this
+     */
+    public function setOwner(?User $user): self
+    {
+        $this->owner = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasOwner(): bool
+    {
+        return $this->owner instanceof User;
+    }
+
+    /**
+     * @param Tag ...$tags
+     * @return $this
+     */
+    public function setTags(Tag ...$tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTags(): bool
+    {
+        return !empty($this->tags);
+    }
+
+    /**
      * @inheritDoc
      */
     public function toArray()
     {
-        return [
+        $values = [
             'domain' => $this->getDomain(),
             'name' => $this->getName(),
         ];
+
+        if ($this->hasOwner()) {
+            $values['owner_id'] = $this
+                ->getOwner()
+                ->getUsername();
+        }
+
+        if ($this->hasTags()) {
+            $values['tag_ids'] = collect($this->getTags())->map(
+                fn(Tag $tag) => $tag->getSlug()
+            )->all();
+        }
+
+        return $values;
     }
 
 }

@@ -16,29 +16,16 @@
  */
 
 return [
-    'example' => [
-        'domain' => 'example.com',
-        'name' => 'Example Site',
-        'owner_id' => 'john.doe',
+    [
+        'slug' => 'laravel',
+        'display_name' => 'Laravel',
     ],
-    'facebook' => [
-        'domain' => 'facebook.com',
-        'name' => 'Facebook',
+    [
+        'slug' => 'json-api',
+        'display_name' => 'JSON:API',
     ],
-    'google' => [
-        'domain' => 'google.com',
-        'name' => 'Google',
-    ],
-    'twitter' => [
-        'domain' => 'twitter.com',
-        'name' => 'Twitter',
-    ],
-    'laravel-json-api' => [
-        'domain' => 'laraveljsonapi.io',
-        'name' => 'Laravel JSON:API',
-        'tag_ids' => [
-            'laravel',
-            'json-api',
-        ],
+    [
+        'slug' => 'test',
+        'display_name' => 'Test',
     ],
 ];

@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\NonEloquent\Tests\Integration;
 
 use App\Entities\Site;
+use App\Entities\User;
 use App\JsonApi\Sites\CrudSiteRepository;
 use App\JsonApi\Sites\SiteRepository;
 use LaravelJsonApi\Contracts\Store\Store;
@@ -159,6 +160,28 @@ class RepositoryTest extends TestCase
         $this->store->delete('sites', 'google');
 
         $this->assertFalse($this->sites()->exists('google'));
+    }
+
+    public function testQueryToOne(): void
+    {
+        $site = $this->sites()->find('example');
+        $expected = $site->getOwner();
+
+        $this->assertInstanceOf(User::class, $expected);
+        $this->assertEquals($expected, $this->store->queryToOne('sites', 'example', 'owner')->first());
+        $this->assertEquals($expected, $this->store->queryToOne('sites', $site, 'owner')->first());
+        $this->assertNull($this->store->queryToOne('sites', 'google', 'owner')->first());
+    }
+
+    public function testQueryToMany(): void
+    {
+        $site = $this->sites()->find('laravel-json-api');
+        $expected = $site->getTags();
+
+        $this->assertCount(2, $expected);
+        $this->assertEquals($expected, $this->store->queryToMany('sites', 'laravel-json-api', 'tags')->get());
+        $this->assertEquals($expected, $this->store->queryToMany('sites', $site, 'tags')->getOrPaginate(null));
+        $this->assertEmpty($this->store->queryToMany('sites', 'google', 'tags')->get());
     }
 
     /**
