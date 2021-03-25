@@ -23,6 +23,7 @@ use App\Entities\User;
 use LaravelJsonApi\Contracts\Store\Repository;
 use LaravelJsonApi\Core\Schema\Schema;
 use LaravelJsonApi\NonEloquent\Fields\Attribute;
+use LaravelJsonApi\NonEloquent\Fields\ID;
 
 class UserSchema extends Schema
 {
@@ -40,6 +41,7 @@ class UserSchema extends Schema
     public function fields(): iterable
     {
         return [
+            ID::make(),
             Attribute::make('name'),
             Attribute::make('username'),
         ];

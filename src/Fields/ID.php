@@ -17,43 +17,53 @@
 
 declare(strict_types=1);
 
-namespace App\JsonApi\Tags;
+namespace LaravelJsonApi\NonEloquent\Fields;
 
-use App\Entities\Tag;
-use LaravelJsonApi\Contracts\Store\Repository;
-use LaravelJsonApi\Core\Schema\Schema;
-use LaravelJsonApi\NonEloquent\Fields\Attribute;
-use LaravelJsonApi\NonEloquent\Fields\ID;
+use LaravelJsonApi\Contracts\Schema\ID as IdContract;
+use LaravelJsonApi\Core\Schema\Concerns\ClientIds;
+use LaravelJsonApi\Core\Schema\Concerns\MatchesIds;
+use LaravelJsonApi\Core\Schema\Concerns\Sortable;
 
-class TagSchema extends Schema
+class ID implements IdContract
 {
 
-    /**
-     * The model the schema corresponds to.
-     *
-     * @var string
-     */
-    public static string $model = Tag::class;
+    use ClientIds;
+    use MatchesIds;
+    use Sortable;
 
     /**
-     * @inheritDoc
+     * Create a new ID field.
+     *
+     * @param mixed ...$args
+     * @return static
      */
-    public function fields(): iterable
+    public static function make(...$args): self
     {
-        return [
-            ID::make(),
-            Attribute::make('displayName'),
-            Attribute::make('slug'),
-        ];
+        return new static(...$args);
     }
 
     /**
      * @inheritDoc
      */
-    public function repository(): Repository
+    public function name(): string
     {
-        return TagRepository::make()
-            ->withServer($this->server);
+        return 'id';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSparseField(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function key(): ?string
+    {
+        return null;
     }
 
 }
