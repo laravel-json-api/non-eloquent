@@ -165,4 +165,73 @@ class SitesTest extends TestCase
         $this->assertEmpty($this->store->queryToMany('sites', 'google', 'tags')->get());
     }
 
+    public function testModifyToOne(): void
+    {
+        $user = $this->users()->find('jane.doe');
+        $site = $this->sites()->find('google');
+
+        $this->assertNull($site->getOwner());
+
+        $actual = $this->store()->modifyToOne('sites', 'google', 'owner')->associate([
+            'type' => 'users',
+            'id' => $user->getUsername(),
+        ]);
+
+        $this->assertEquals($user, $actual);
+        $this->assertEquals($user, $this->sites()->find('google')->getOwner());
+    }
+
+    public function testSyncToMany(): void
+    {
+        $tags = $this->tags()->get()->values();
+        $site = $this->sites()->find('google');
+
+        $this->assertEmpty($site->getTags());
+
+        $actual = $this->store()->modifyToMany('sites', 'google', 'tags')->sync(
+            $tags->map(fn(Tag $tag) => [
+                'type' => 'tags',
+                'id' => $tag->getSlug(),
+            ])->all()
+        );
+
+        $this->assertEquals($tags->all(), $actual);
+        $this->assertEquals($tags->all(), $this->sites()->find('google')->getTags());
+    }
+
+    public function testAttachToMany(): void
+    {
+        $tags = collect($this->tags()->findMany(['test', 'laravel']));
+        $site = $this->sites()->find('laravel-json-api');
+
+        $this->assertEquals(['laravel', 'json-api'], $site->getTagIds());
+
+        $actual = $this->store()->modifyToMany('sites', 'laravel-json-api', 'tags')->attach(
+            $tags->map(fn(Tag $tag) => [
+                'type' => 'tags',
+                'id' => $tag->getSlug(),
+            ])->all()
+        );
+
+        $this->assertEquals($tags->all(), $actual);
+        $this->assertEquals(['laravel', 'json-api', 'test'], $this->sites()->find('laravel-json-api')->getTagIds());
+    }
+
+    public function testDetachToMany(): void
+    {
+        $tags = collect($this->tags()->findMany(['test', 'laravel']));
+        $site = $this->sites()->find('laravel-json-api');
+
+        $this->assertEquals(['laravel', 'json-api'], $site->getTagIds());
+
+        $actual = $this->store()->modifyToMany('sites', 'laravel-json-api', 'tags')->detach(
+            $tags->map(fn(Tag $tag) => [
+                'type' => 'tags',
+                'id' => $tag->getSlug(),
+            ])->all()
+        );
+
+        $this->assertEquals($tags->all(), $actual);
+        $this->assertEquals(['json-api'], $this->sites()->find('laravel-json-api')->getTagIds());
+    }
 }

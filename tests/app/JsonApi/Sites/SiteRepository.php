@@ -20,20 +20,29 @@ declare(strict_types=1);
 namespace App\JsonApi\Sites;
 
 use App\Entities\SiteStorage;
+use App\JsonApi\Sites\Capabilities\ModifySiteRelationships;
 use LaravelJsonApi\Contracts\Store\CreatesResources;
 use LaravelJsonApi\Contracts\Store\DeletesResources;
+use LaravelJsonApi\Contracts\Store\ModifiesToMany;
+use LaravelJsonApi\Contracts\Store\ModifiesToOne;
 use LaravelJsonApi\Contracts\Store\QueriesAll;
 use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
 use LaravelJsonApi\Contracts\Store\ResourceBuilder;
 use LaravelJsonApi\Contracts\Store\UpdatesResources;
 use LaravelJsonApi\NonEloquent\AbstractRepository;
+use LaravelJsonApi\NonEloquent\Capabilities\ModifyRelations;
+use LaravelJsonApi\NonEloquent\Concerns\HasModifyRelationsCapability;
 
 class SiteRepository extends AbstractRepository implements
     QueriesAll,
     CreatesResources,
     UpdatesResources,
-    DeletesResources
+    DeletesResources,
+    ModifiesToOne,
+    ModifiesToMany
 {
+
+    use HasModifyRelationsCapability;
 
     /**
      * @var SiteStorage
@@ -92,6 +101,14 @@ class SiteRepository extends AbstractRepository implements
     public function delete($modelOrResourceId): void
     {
         $this->storage->remove($modelOrResourceId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function relations(): ModifyRelations
+    {
+        return ModifySiteRelationships::make();
     }
 
 }

@@ -112,13 +112,13 @@ abstract class Capability implements Builder
      * Find to-many related resources using JSON:API identifiers.
      *
      * @param array $identifiers
-     * @return Collection
+     * @return array
      */
-    protected function toMany(array $identifiers): Collection
+    protected function toMany(array $identifiers): array
     {
         return Collection::make(
             $this->server()->store()->findMany($identifiers),
-        );
+        )->all();
     }
 
 }

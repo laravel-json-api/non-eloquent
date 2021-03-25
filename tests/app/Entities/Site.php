@@ -154,11 +154,15 @@ class Site implements Arrayable
     }
 
     /**
-     * @return bool
+     * @return string|null
      */
-    public function hasOwner(): bool
+    public function getOwnerId(): ?string
     {
-        return $this->owner instanceof User;
+        if ($this->owner) {
+            return $this->owner->getUsername();
+        }
+
+        return null;
     }
 
     /**
@@ -189,6 +193,16 @@ class Site implements Arrayable
     }
 
     /**
+     * @return array
+     */
+    public function getTagIds(): array
+    {
+        return collect($this->getTags())
+            ->map(fn(Tag $tag) => $tag->getSlug())
+            ->all();
+    }
+
+    /**
      * @inheritDoc
      */
     public function toArray()
@@ -198,16 +212,12 @@ class Site implements Arrayable
             'name' => $this->getName(),
         ];
 
-        if ($this->hasOwner()) {
-            $values['owner_id'] = $this
-                ->getOwner()
-                ->getUsername();
+        if ($ownerId = $this->getOwnerId()) {
+            $values['owner_id'] = $ownerId;
         }
 
-        if ($this->hasTags()) {
-            $values['tag_ids'] = collect($this->getTags())->map(
-                fn(Tag $tag) => $tag->getSlug()
-            )->all();
+        if ($tagIds = $this->getTagIds()) {
+            $values['tag_ids'] = $tagIds;
         }
 
         return $values;
