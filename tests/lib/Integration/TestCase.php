@@ -23,6 +23,7 @@ use App\Entities\SiteStorage;
 use App\Entities\TagStorage;
 use App\Entities\UserStorage;
 use App\JsonApi\Sites\SiteSchema;
+use App\JsonApi\Tags\TagSchema;
 use App\JsonApi\Users\UserSchema;
 use LaravelJsonApi\Contracts\Resources\Container as ResourceContainerContract;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainerContract;
@@ -47,21 +48,22 @@ class TestCase extends BaseTestCase
         $this->app->singleton(SiteStorage::class, fn() => new SiteStorage(
             $this->app->make(UserStorage::class),
             $this->app->make(TagStorage::class),
-            require __DIR__ . '/../../sites.php'
+            require __DIR__ . '/../../storage/sites.php'
         ));
 
         $this->app->singleton(UserStorage::class, fn() => new UserStorage(
-            require __DIR__ . '/../../users.php'
+            require __DIR__ . '/../../storage/users.php'
         ));
 
         $this->app->singleton(TagStorage::class, fn() => new TagStorage(
-            require __DIR__ . '/../../tags.php'
+            require __DIR__ . '/../../storage/tags.php'
         ));
 
         $this->app->singleton(
             SchemaContainerContract::class,
             fn() => new SchemaContainer($this->app, $this->app->make(Server::class), [
                 SiteSchema::class,
+                TagSchema::class,
                 UserSchema::class,
             ]),
         );
@@ -70,6 +72,7 @@ class TestCase extends BaseTestCase
             $server = $this->createMock(Server::class);
             $server->method('schemas')->willReturnCallback(fn() => $this->schemas());
             $server->method('resources')->willReturnCallback(fn() => $this->resources());
+            $server->method('store')->willReturnCallback(fn() => $this->store());
             return $server;
         });
 

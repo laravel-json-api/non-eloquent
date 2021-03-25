@@ -21,6 +21,7 @@ namespace App\JsonApi\Sites\Capabilities;
 
 use App\Entities\Site;
 use App\Entities\SiteStorage;
+use App\Entities\User;
 use LaravelJsonApi\NonEloquent\Capabilities\CreateResource;
 
 class CreateSite extends CreateResource
@@ -49,9 +50,15 @@ class CreateSite extends CreateResource
      */
     public function create(array $validatedData): Site
     {
+        /** @var User|null $owner */
+        $owner = $this->toOne($validatedData['owner'] ?? null);
+        $tags = $this->toMany($validatedData['tags'] ?? []);
+
         $site = new Site($validatedData['slug']);
         $site->setDomain($validatedData['domain'] ?? null);
         $site->setName($validatedData['name'] ?? null);
+        $site->setOwner($owner);
+        $site->setTags(...$tags);
 
         $this->storage->store($site);
 

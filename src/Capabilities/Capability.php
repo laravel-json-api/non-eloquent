@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Query\QueryParameters;
 use LaravelJsonApi\Contracts\Store\Builder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
@@ -87,6 +88,37 @@ abstract class Capability implements Builder
         $this->queryParameters->setIncludePaths($includePaths);
 
         return $this;
+    }
+
+    /**
+     * Find to-one related resource using a JSON:API identifier.
+     *
+     * @param array|null $identifier
+     * @return object|null
+     */
+    protected function toOne(?array $identifier): ?object
+    {
+        if ($identifier) {
+            return $this->server()->store()->find(
+                $identifier['type'],
+                $identifier['id'],
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * Find to-many related resources using JSON:API identifiers.
+     *
+     * @param array $identifiers
+     * @return Collection
+     */
+    protected function toMany(array $identifiers): Collection
+    {
+        return Collection::make(
+            $this->server()->store()->findMany($identifiers),
+        );
     }
 
 }

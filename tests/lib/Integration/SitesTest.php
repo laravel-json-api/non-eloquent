@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\NonEloquent\Tests\Integration;
 
 use App\Entities\Site;
+use App\Entities\Tag;
 use App\Entities\User;
 use LaravelJsonApi\Contracts\Store\Store;
 
@@ -85,15 +86,25 @@ class SitesTest extends TestCase
 
     public function testCreate(): void
     {
+        $user = $this->users()->find('john.doe');
+        $tag = $this->tags()->find('laravel');
+
         $expected = Site::fromArray('dancecloud', [
             'domain' => 'dancecloud.com',
             'name' => 'DanceCloud',
-        ]);
+        ])->setOwner($user)->setTags($tag);
 
         $actual = $this->store->create('sites')->store([
             'domain' => $expected->getDomain(),
             'name' => $expected->getName(),
+            'owner' => [
+                'type' => 'users',
+                'id' => $user->getUsername(),
+            ],
             'slug' => $expected->getSlug(),
+            'tags' => [
+                ['type' => 'tags', 'id' => $tag->getSlug()],
+            ],
         ]);
 
         $this->assertEquals($expected, $actual);
@@ -102,14 +113,21 @@ class SitesTest extends TestCase
 
     public function testUpdate(): void
     {
+        $tags = $this->tags()->all();
+
         $expected = $this->sites()->find('google');
         $expected->setName('Google (UK)');
         $expected->setDomain('google.co.uk');
+        $expected->setTags(...$tags);
 
         $actual = $this->store->update('sites', 'google')->store([
             'domain' => $expected->getDomain(),
             'name' => $expected->getName(),
             'slug' => $expected->getSlug(),
+            'tags' => collect($tags)->map(fn(Tag $tag) => [
+                'type' => 'tags',
+                'id' => $tag->getSlug(),
+            ])->all(),
         ]);
 
         $this->assertEquals($expected, $actual);

@@ -167,7 +167,7 @@ class Site implements Arrayable
      */
     public function setTags(Tag ...$tags): self
     {
-        $this->tags = $tags;
+        $this->tags = array_values($tags);
 
         return $this;
     }

@@ -71,7 +71,8 @@ class SiteRepository extends AbstractRepository implements
      */
     public function create(): ResourceBuilder
     {
-        return Capabilities\CreateSite::make();
+        return Capabilities\CreateSite::make()
+            ->withServer($this->server());
     }
 
     /**
@@ -80,6 +81,7 @@ class SiteRepository extends AbstractRepository implements
     public function update($modelOrResourceId): ResourceBuilder
     {
         return Capabilities\ModifySite::make()
+            ->withServer($this->server())
             ->withRepository($this)
             ->withModelOrResourceId($modelOrResourceId);
     }

@@ -58,6 +58,14 @@ class ModifySite extends ModifyResource
             $site->setName($validatedData['name']);
         }
 
+        if (array_key_exists('owner', $validatedData)) {
+            $site->setOwner($this->toOne($validatedData['owner']));
+        }
+
+        if (isset($validatedData['tags'])) {
+            $site->setTags(...$this->toMany($validatedData['tags']));
+        }
+
         $this->storage->store($site);
 
         return $site;
