@@ -23,6 +23,8 @@ use App\Entities\Site;
 use LaravelJsonApi\Contracts\Store\Repository;
 use LaravelJsonApi\Core\Schema\Schema;
 use LaravelJsonApi\NonEloquent\Fields\Attribute;
+use LaravelJsonApi\NonEloquent\Fields\ToMany;
+use LaravelJsonApi\NonEloquent\Fields\ToOne;
 
 class SiteSchema extends Schema
 {
@@ -42,6 +44,8 @@ class SiteSchema extends Schema
         return [
             Attribute::make('domain'),
             Attribute::make('name'),
+            ToOne::make('owner')->type('users'),
+            ToMany::make('tags'),
         ];
     }
 
