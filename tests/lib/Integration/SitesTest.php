@@ -21,11 +21,9 @@ namespace LaravelJsonApi\NonEloquent\Tests\Integration;
 
 use App\Entities\Site;
 use App\Entities\User;
-use App\JsonApi\Sites\CrudSiteRepository;
-use App\JsonApi\Sites\SiteRepository;
 use LaravelJsonApi\Contracts\Store\Store;
 
-class RepositoryTest extends TestCase
+class SitesTest extends TestCase
 {
 
     /**
@@ -40,17 +38,6 @@ class RepositoryTest extends TestCase
     {
         parent::setUp();
         $this->store = $this->store();
-    }
-
-    /**
-     * @return array
-     */
-    public function booleanProvider(): array
-    {
-        return [
-            [true],
-            [false],
-        ];
     }
 
     public function testFind(): void
@@ -87,14 +74,8 @@ class RepositoryTest extends TestCase
         $this->assertEquals($sites->all(), iterator_to_array($actual));
     }
 
-    /**
-     * @param bool $crud
-     * @dataProvider booleanProvider
-     */
-    public function testQueryOne(bool $crud): void
+    public function testQueryOne(): void
     {
-        $this->usingCrudRepository($crud);
-
         $actual = $this->store->queryOne('sites', 'google')->first();
 
         $this->assertInstanceOf(Site::class, $actual);
@@ -102,14 +83,8 @@ class RepositoryTest extends TestCase
         $this->assertNull($this->store->queryOne('sites', 'foobar')->first());
     }
 
-    /**
-     * @param bool $crud
-     * @dataProvider booleanProvider
-     */
-    public function testCreate(bool $crud): void
+    public function testCreate(): void
     {
-        $this->usingCrudRepository($crud);
-
         $expected = Site::fromArray('dancecloud', [
             'domain' => 'dancecloud.com',
             'name' => 'DanceCloud',
@@ -125,14 +100,8 @@ class RepositoryTest extends TestCase
         $this->assertEquals($expected, $this->sites()->find($expected->getSlug()));
     }
 
-    /**
-     * @param bool $crud
-     * @dataProvider booleanProvider
-     */
-    public function testUpdate(bool $crud): void
+    public function testUpdate(): void
     {
-        $this->usingCrudRepository($crud);
-
         $expected = $this->sites()->find('google');
         $expected->setName('Google (UK)');
         $expected->setDomain('google.co.uk');
@@ -147,14 +116,8 @@ class RepositoryTest extends TestCase
         $this->assertEquals($expected, $this->sites()->find($expected->getSlug()));
     }
 
-    /**
-     * @param bool $crud
-     * @dataProvider booleanProvider
-     */
-    public function testDelete(bool $crud): void
+    public function testDelete(): void
     {
-        $this->usingCrudRepository($crud);
-
         $this->assertTrue($this->sites()->exists('google'));
 
         $this->store->delete('sites', 'google');
@@ -184,16 +147,4 @@ class RepositoryTest extends TestCase
         $this->assertEmpty($this->store->queryToMany('sites', 'google', 'tags')->get());
     }
 
-    /**
-     * Override the site repository to use the alternative CrudSiteRepository.
-     *
-     * @param bool $crud
-     * @return void
-     */
-    private function usingCrudRepository(bool $crud = true): void
-    {
-        if ($crud) {
-            $this->instance(SiteRepository::class, CrudSiteRepository::make());
-        }
-    }
 }

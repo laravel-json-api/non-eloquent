@@ -23,6 +23,7 @@ use App\Entities\SiteStorage;
 use App\Entities\TagStorage;
 use App\Entities\UserStorage;
 use App\JsonApi\Sites\SiteSchema;
+use App\JsonApi\Users\UserSchema;
 use LaravelJsonApi\Contracts\Resources\Container as ResourceContainerContract;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainerContract;
 use LaravelJsonApi\Contracts\Store\Store as StoreContract;
@@ -61,6 +62,7 @@ class TestCase extends BaseTestCase
             SchemaContainerContract::class,
             fn() => new SchemaContainer($this->app, $this->app->make(Server::class), [
                 SiteSchema::class,
+                UserSchema::class,
             ]),
         );
 
@@ -106,5 +108,21 @@ class TestCase extends BaseTestCase
     protected function sites(): SiteStorage
     {
         return $this->app->make(SiteStorage::class);
+    }
+
+    /**
+     * @return UserStorage
+     */
+    protected function users(): UserStorage
+    {
+        return $this->app->make(UserStorage::class);
+    }
+
+    /**
+     * @return TagStorage
+     */
+    protected function tags(): TagStorage
+    {
+        return $this->app->make(TagStorage::class);
     }
 }

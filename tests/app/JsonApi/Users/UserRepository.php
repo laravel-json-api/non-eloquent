@@ -17,10 +17,9 @@
 
 declare(strict_types=1);
 
-namespace App\JsonApi\Sites;
+namespace App\JsonApi\Users;
 
-use App\Entities\SiteStorage;
-use App\JsonApi\Sites\Capabilities\CrudSite;
+use App\Entities\UserStorage;
 use LaravelJsonApi\Contracts\Store\CreatesResources;
 use LaravelJsonApi\Contracts\Store\DeletesResources;
 use LaravelJsonApi\Contracts\Store\UpdatesResources;
@@ -28,25 +27,22 @@ use LaravelJsonApi\NonEloquent\AbstractRepository;
 use LaravelJsonApi\NonEloquent\Capabilities\Crud;
 use LaravelJsonApi\NonEloquent\Concerns\HasCrudCapability;
 
-class CrudSiteRepository extends AbstractRepository implements
-    CreatesResources,
-    UpdatesResources,
-    DeletesResources
+class UserRepository extends AbstractRepository implements CreatesResources, UpdatesResources, DeletesResources
 {
 
     use HasCrudCapability;
 
     /**
-     * @var SiteStorage
+     * @var UserStorage
      */
-    private SiteStorage $storage;
+    private UserStorage $storage;
 
     /**
-     * CrudSiteRepository constructor.
+     * UserRepository constructor.
      *
-     * @param SiteStorage $storage
+     * @param UserStorage $storage
      */
-    public function __construct(SiteStorage $storage)
+    public function __construct(UserStorage $storage)
     {
         $this->storage = $storage;
     }
@@ -64,7 +60,8 @@ class CrudSiteRepository extends AbstractRepository implements
      */
     protected function crud(): Crud
     {
-        return CrudSite::make($this->storage);
+        return Capabilities\CrudUser::make($this->storage);
     }
+
 
 }
