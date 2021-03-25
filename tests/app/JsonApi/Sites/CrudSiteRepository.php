@@ -20,12 +20,21 @@ declare(strict_types=1);
 namespace App\JsonApi\Sites;
 
 use App\Entities\SiteStorage;
-use LaravelJsonApi\NonEloquent\Capabilities\Crud;
-use LaravelJsonApi\NonEloquent\CrudRepository;
 use App\JsonApi\Sites\Capabilities\CrudSite;
+use LaravelJsonApi\Contracts\Store\CreatesResources;
+use LaravelJsonApi\Contracts\Store\DeletesResources;
+use LaravelJsonApi\Contracts\Store\UpdatesResources;
+use LaravelJsonApi\NonEloquent\AbstractRepository;
+use LaravelJsonApi\NonEloquent\Capabilities\Crud;
+use LaravelJsonApi\NonEloquent\Concerns\HasCrudCapability;
 
-class CrudSiteRepository extends CrudRepository
+class CrudSiteRepository extends AbstractRepository implements
+    CreatesResources,
+    UpdatesResources,
+    DeletesResources
 {
+
+    use HasCrudCapability;
 
     /**
      * @var SiteStorage

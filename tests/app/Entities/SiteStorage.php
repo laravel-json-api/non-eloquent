@@ -44,31 +44,6 @@ class SiteStorage implements Countable
     }
 
     /**
-     * Load sites into the repository.
-     *
-     * @param iterable $sites
-     * @return void
-     */
-    public function load(iterable $sites): void
-    {
-        foreach ($sites as $slug => $values) {
-            if ($values instanceof Site) {
-                $this->sites[$values->getSlug()] = $values->toArray();
-                continue;
-            }
-
-            if (is_array($values)) {
-                $this->sites[$slug] = $values;
-                continue;
-            }
-
-            throw new LogicException('Expecting an iterable of sites entities or array values.');
-        }
-
-        ksort($this->sites);
-    }
-
-    /**
      * Find a site by its slug.
      *
      * @param string $slug
@@ -165,6 +140,31 @@ class SiteStorage implements Countable
     public function count()
     {
         return count($this->sites);
+    }
+
+    /**
+     * Load sites into the repository.
+     *
+     * @param iterable $sites
+     * @return void
+     */
+    private function load(iterable $sites): void
+    {
+        foreach ($sites as $slug => $values) {
+            if ($values instanceof Site) {
+                $this->sites[$values->getSlug()] = $values->toArray();
+                continue;
+            }
+
+            if (is_array($values)) {
+                $this->sites[$slug] = $values;
+                continue;
+            }
+
+            throw new LogicException('Expecting an iterable of sites entities or array values.');
+        }
+
+        ksort($this->sites);
     }
 
 }

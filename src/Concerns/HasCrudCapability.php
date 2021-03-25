@@ -17,19 +17,13 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent;
+namespace LaravelJsonApi\NonEloquent\Concerns;
 
-use LaravelJsonApi\Contracts\Store\CreatesResources;
-use LaravelJsonApi\Contracts\Store\DeletesResources;
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\ResourceBuilder;
-use LaravelJsonApi\Contracts\Store\UpdatesResources;
 use LaravelJsonApi\NonEloquent\Capabilities\Crud;
 
-abstract class CrudRepository extends AbstractRepository implements
-    CreatesResources,
-    UpdatesResources,
-    DeletesResources
+trait HasCrudCapability
 {
 
     /**
@@ -87,5 +81,4 @@ abstract class CrudRepository extends AbstractRepository implements
             ->maybeWithSchema($this->schema)
             ->withRepository($this);
     }
-
 }
