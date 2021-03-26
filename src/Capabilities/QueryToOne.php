@@ -21,10 +21,15 @@ namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use LaravelJsonApi\Core\Support\Str;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelResourceIdAndFieldName;
+use RuntimeException;
+use function is_null;
+use function is_object;
+use function method_exists;
+use function sprintf;
 
-abstract class QueryToOne extends Capability implements QueryOneBuilder
+class QueryToOne extends Capability implements QueryOneBuilder
 {
 
     use HasModelResourceIdAndFieldName;
@@ -38,6 +43,29 @@ abstract class QueryToOne extends Capability implements QueryOneBuilder
         $this->queryParameters->setFilters($filters);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function first(): ?object
+    {
+        $method = 'get' . Str::classify($this->fieldName);
+
+        if (method_exists($this, $method)) {
+            return $this->{$method}($this->modelOrFail());
+        }
+
+        $value = $this->value();
+
+        if (is_object($value) || is_null($value)) {
+            return $value;
+        }
+
+        throw new RuntimeException(sprintf(
+            'Expecting resource to return an object or null for relation %s.',
+            $this->fieldName,
+        ));
     }
 
 }

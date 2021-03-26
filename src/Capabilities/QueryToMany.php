@@ -21,9 +21,14 @@ namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
+use LaravelJsonApi\Core\Support\Str;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelResourceIdAndFieldName;
+use RuntimeException;
+use function is_iterable;
+use function method_exists;
+use function sprintf;
 
-abstract class QueryToMany extends Capability implements QueryManyBuilder
+class QueryToMany extends Capability implements QueryManyBuilder
 {
 
     use HasModelResourceIdAndFieldName;
@@ -48,6 +53,29 @@ abstract class QueryToMany extends Capability implements QueryManyBuilder
         $this->queryParameters->setSortFields($fields);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get(): iterable
+    {
+        $method = 'get' . Str::classify($this->fieldName);
+
+        if (method_exists($this, $method)) {
+            return $this->{$method}($this->modelOrFail());
+        }
+
+        $value = $this->value();
+
+        if (is_iterable($value)) {
+            return $value;
+        }
+
+        throw new RuntimeException(sprintf(
+            'Expecting resource to return an iterable value for relation %s.',
+            $this->fieldName,
+        ));
     }
 
 }

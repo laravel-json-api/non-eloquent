@@ -23,7 +23,7 @@ use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
 
-abstract class QueryOne extends Capability implements QueryOneBuilder
+class QueryOne extends Capability implements QueryOneBuilder
 {
 
     use HasModelOrResourceId;
@@ -37,6 +37,14 @@ abstract class QueryOne extends Capability implements QueryOneBuilder
         $this->queryParameters->setFilters($filters);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function first(): ?object
+    {
+        return $this->model();
     }
 
 }

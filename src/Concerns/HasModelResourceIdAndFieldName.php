@@ -41,4 +41,18 @@ trait HasModelResourceIdAndFieldName
 
         return $this;
     }
+
+    /**
+     * Get the relation's value by retrieving it from the JSON:API resource class.
+     *
+     * @return mixed
+     */
+    protected function value()
+    {
+        $resource = $this->server()->resources()->create(
+            $this->modelOrFail()
+        );
+
+        return $resource->relationship($this->fieldName)->data();
+    }
 }

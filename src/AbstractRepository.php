@@ -25,6 +25,9 @@ use LaravelJsonApi\Contracts\Store\QueriesToOne;
 use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\Repository;
+use LaravelJsonApi\NonEloquent\Capabilities\QueryOne;
+use LaravelJsonApi\NonEloquent\Capabilities\QueryToMany;
+use LaravelJsonApi\NonEloquent\Capabilities\QueryToOne;
 use RuntimeException;
 use function is_object;
 
@@ -85,7 +88,8 @@ abstract class AbstractRepository implements Repository, QueriesOne, QueriesToOn
      */
     public function queryOne($modelOrResourceId): QueryOneBuilder
     {
-        return Defaults\QueryOne::make($this)
+        return QueryOne::make()
+            ->withRepository($this)
             ->withModelOrResourceId($modelOrResourceId);
     }
 
@@ -94,7 +98,9 @@ abstract class AbstractRepository implements Repository, QueriesOne, QueriesToOn
      */
     public function queryToOne($modelOrResourceId, string $fieldName): QueryOneBuilder
     {
-        return Defaults\QueryToOne::make($this->server(), $this)
+        return QueryToOne::make()
+            ->withServer($this->server())
+            ->withRepository($this)
             ->withModelOrResourceId($modelOrResourceId)
             ->withFieldName($fieldName);
     }
@@ -104,7 +110,9 @@ abstract class AbstractRepository implements Repository, QueriesOne, QueriesToOn
      */
     public function queryToMany($modelOrResourceId, string $fieldName): QueryManyBuilder
     {
-        return Defaults\QueryToMany::make($this->server(), $this)
+        return QueryToMany::make($this->server(), $this)
+            ->withServer($this->server())
+            ->withRepository($this)
             ->withModelOrResourceId($modelOrResourceId)
             ->withFieldName($fieldName);
     }
