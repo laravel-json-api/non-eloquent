@@ -20,12 +20,14 @@ declare(strict_types=1);
 namespace App\JsonApi\Sites;
 
 use App\Entities\Site;
+use LaravelJsonApi\Contracts\Pagination\Paginator;
 use LaravelJsonApi\Contracts\Store\Repository;
 use LaravelJsonApi\Core\Schema\Schema;
 use LaravelJsonApi\NonEloquent\Fields\Attribute;
 use LaravelJsonApi\NonEloquent\Fields\ID;
 use LaravelJsonApi\NonEloquent\Fields\ToMany;
 use LaravelJsonApi\NonEloquent\Fields\ToOne;
+use LaravelJsonApi\NonEloquent\Pagination\EnumerablePagination;
 
 class SiteSchema extends Schema
 {
@@ -54,10 +56,19 @@ class SiteSchema extends Schema
     /**
      * @inheritDoc
      */
+    public function pagination(): ?Paginator
+    {
+        return EnumerablePagination::make();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function repository(): Repository
     {
         return SiteRepository::make()
-            ->withServer($this->server);
+            ->withServer($this->server)
+            ->withSchema($this);
     }
 
 }

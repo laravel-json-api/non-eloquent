@@ -22,16 +22,12 @@ namespace LaravelJsonApi\NonEloquent\Capabilities;
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use LaravelJsonApi\NonEloquent\Concerns\HasModelResourceIdAndFieldName;
 
 abstract class QueryToOne extends Capability implements QueryOneBuilder
 {
 
-    use HasModelOrResourceId;
-
-    /**
-     * @var string
-     */
-    protected string $fieldName;
+    use HasModelResourceIdAndFieldName;
 
     /**
      * @inheritDoc
@@ -40,19 +36,6 @@ abstract class QueryToOne extends Capability implements QueryOneBuilder
     {
         $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setFilters($filters);
-
-        return $this;
-    }
-
-    /**
-     * Set the field name that is being queried.
-     *
-     * @param string $fieldName
-     * @return $this
-     */
-    public function withFieldName(string $fieldName): self
-    {
-        $this->fieldName = $fieldName;
 
         return $this;
     }

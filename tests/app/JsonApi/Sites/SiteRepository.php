@@ -72,7 +72,9 @@ class SiteRepository extends AbstractRepository implements
      */
     public function queryAll(): QueryManyBuilder
     {
-        return Capabilities\QuerySites::make();
+        return Capabilities\QuerySites::make()
+            ->withServer($this->server())
+            ->withSchema($this->schema());
     }
 
     /**
@@ -81,7 +83,8 @@ class SiteRepository extends AbstractRepository implements
     public function create(): ResourceBuilder
     {
         return Capabilities\CreateSite::make()
-            ->withServer($this->server());
+            ->withServer($this->server())
+            ->withSchema($this->schema());
     }
 
     /**
@@ -91,6 +94,7 @@ class SiteRepository extends AbstractRepository implements
     {
         return Capabilities\ModifySite::make()
             ->withServer($this->server())
+            ->withSchema($this->schema())
             ->withRepository($this)
             ->withModelOrResourceId($modelOrResourceId);
     }

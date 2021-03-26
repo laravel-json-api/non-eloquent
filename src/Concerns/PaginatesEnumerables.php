@@ -19,26 +19,36 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\NonEloquent\Concerns;
 
-trait HasModelResourceIdAndFieldName
+use LaravelJsonApi\Contracts\Pagination\Page;
+use LaravelJsonApi\NonEloquent\Pagination\EnumerablePagination;
+use RuntimeException;
+
+trait PaginatesEnumerables
 {
 
-    use HasModelOrResourceId;
-
     /**
-     * @var string
+     * @inheritDoc
      */
-    protected string $fieldName;
-
-    /**
-     * Set the relation field name.
-     *
-     * @param string $fieldName
-     * @return $this
-     */
-    public function withFieldName(string $fieldName): self
+    public function paginate(array $page): Page
     {
-        $this->fieldName = $fieldName;
+        $paginator = $this->schema()->pagination();
 
-        return $this;
+        if ($paginator instanceof EnumerablePagination) {
+            return $paginator->paginate($this->get(), $page);
+        }
+
+        throw new RuntimeException('Expecting schema to return an enumerable paginator.');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrPaginate(?array $page): iterable
+    {
+        if (empty($page)) {
+            return $this->get();
+        }
+
+        return $this->paginate($page);
     }
 }

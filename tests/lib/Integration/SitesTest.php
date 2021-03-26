@@ -23,6 +23,7 @@ use App\Entities\Site;
 use App\Entities\Tag;
 use App\Entities\User;
 use LaravelJsonApi\Contracts\Store\Store;
+use LaravelJsonApi\NonEloquent\Pagination\EnumerablePage;
 
 class SitesTest extends TestCase
 {
@@ -73,6 +74,17 @@ class SitesTest extends TestCase
 
         $this->assertCount(count($sites), $actual);
         $this->assertEquals($sites->all(), iterator_to_array($actual));
+    }
+
+    public function testQueryAllWithPagination(): void
+    {
+        $expected = $this->sites()->get()->forPage(2, 3);
+
+        $actual = $this->store->queryAll('sites')->paginate(['number' => '2', 'size' => '3']);
+
+        $this->assertInstanceOf(EnumerablePage::class, $actual);
+        $this->assertCount(count($expected), $actual);
+        $this->assertEquals($expected->all(), iterator_to_array($actual));
     }
 
     public function testQueryOne(): void

@@ -20,10 +20,14 @@ declare(strict_types=1);
 namespace App\JsonApi\Sites\Capabilities;
 
 use App\Entities\SiteStorage;
+use LaravelJsonApi\Contracts\Store\HasPagination;
 use LaravelJsonApi\NonEloquent\Capabilities\QueryAll;
+use LaravelJsonApi\NonEloquent\Concerns\PaginatesEnumerables;
 
-class QuerySites extends QueryAll
+class QuerySites extends QueryAll implements HasPagination
 {
+
+    use PaginatesEnumerables;
 
     /**
      * @var SiteStorage

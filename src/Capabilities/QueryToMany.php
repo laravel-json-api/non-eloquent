@@ -21,17 +21,12 @@ namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use LaravelJsonApi\NonEloquent\Concerns\HasModelResourceIdAndFieldName;
 
 abstract class QueryToMany extends Capability implements QueryManyBuilder
 {
 
-    use HasModelOrResourceId;
-
-    /**
-     * @var string
-     */
-    protected string $fieldName;
+    use HasModelResourceIdAndFieldName;
 
     /**
      * @inheritDoc
@@ -51,19 +46,6 @@ abstract class QueryToMany extends Capability implements QueryManyBuilder
     {
         $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setSortFields($fields);
-
-        return $this;
-    }
-
-    /**
-     * Set the field name that is being queried.
-     *
-     * @param string $fieldName
-     * @return $this
-     */
-    public function withFieldName(string $fieldName): self
-    {
-        $this->fieldName = $fieldName;
 
         return $this;
     }
