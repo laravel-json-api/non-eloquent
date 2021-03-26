@@ -23,7 +23,6 @@ use App\Entities\Site;
 use App\Entities\SiteStorage;
 use LaravelJsonApi\Contracts\Store\HasPagination;
 use LaravelJsonApi\Contracts\Store\HasSingularFilters;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\NonEloquent\Capabilities\QueryAll;
 use LaravelJsonApi\NonEloquent\Concerns\PaginatesEnumerables;
 
@@ -38,7 +37,7 @@ class QuerySites extends QueryAll implements HasPagination, HasSingularFilters
     private SiteStorage $sites;
 
     /**
-     * QueryAll constructor.
+     * QuerySites constructor.
      *
      * @param SiteStorage $sites
      */
@@ -56,9 +55,10 @@ class QuerySites extends QueryAll implements HasPagination, HasSingularFilters
         $sites = $this->sites->get();
         $filters = $this->queryParameters->filter();
 
-        if ($filters && $slugs = $filters->get('slugs')) {
-            $slugs = collect($slugs->value());
-            $sites = $sites->filter(fn(Site $site) => $slugs->contains($site->getSlug()));
+        if ($filters && is_array($slugs = $filters->value('slugs'))) {
+            $sites = $sites->filter(
+                fn(Site $site) => in_array($site->getSlug(), $slugs)
+            );
         }
 
         return $sites->values();
