@@ -39,9 +39,17 @@ abstract class Capability implements Builder
     protected ?Request $request = null;
 
     /**
-     * @var ExtendedQueryParameters|null
+     * @var ExtendedQueryParameters
      */
-    protected ?ExtendedQueryParameters $queryParameters = null;
+    protected ExtendedQueryParameters $queryParameters;
+
+    /**
+     * Capability constructor.
+     */
+    public function __construct()
+    {
+        $this->queryParameters = new ExtendedQueryParameters();
+    }
 
     /**
      * Fluent constructor.
@@ -84,7 +92,6 @@ abstract class Capability implements Builder
      */
     public function with($includePaths): Builder
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setIncludePaths($includePaths);
 
         return $this;

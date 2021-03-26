@@ -44,8 +44,8 @@ class QuerySites extends QueryAll implements HasPagination, HasSingularFilters
      */
     public function __construct(SiteStorage $sites)
     {
+        parent::__construct();
         $this->sites = $sites;
-        $this->queryParameters = new ExtendedQueryParameters();
     }
 
     /**

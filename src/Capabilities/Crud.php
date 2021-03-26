@@ -21,7 +21,6 @@ namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\ResourceBuilder;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
 use LogicException;
 use function method_exists;
@@ -37,7 +36,6 @@ abstract class Crud extends Capability implements QueryOneBuilder, ResourceBuild
      */
     public function filter(?array $filters): QueryOneBuilder
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setFilters($filters);
 
         return $this;

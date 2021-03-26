@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\Core\Support\Str;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelResourceIdAndFieldName;
 use RuntimeException;
@@ -38,7 +37,6 @@ class QueryToMany extends Capability implements QueryManyBuilder
      */
     public function filter(?array $filters): QueryManyBuilder
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setFilters($filters);
 
         return $this;
@@ -49,7 +47,6 @@ class QueryToMany extends Capability implements QueryManyBuilder
      */
     public function sort($fields): QueryManyBuilder
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setSortFields($fields);
 
         return $this;

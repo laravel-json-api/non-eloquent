@@ -40,6 +40,7 @@ class ModifySiteRelationships extends ModifyRelations
      */
     public function __construct(SiteStorage $storage)
     {
+        parent::__construct();
         $this->storage = $storage;
     }
 

@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace LaravelJsonApi\NonEloquent\Capabilities;
 
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
-use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\Core\Support\Str;
 use LaravelJsonApi\NonEloquent\Concerns\HasModelResourceIdAndFieldName;
 use RuntimeException;
@@ -39,7 +38,6 @@ class QueryToOne extends Capability implements QueryOneBuilder
      */
     public function filter(?array $filters): QueryOneBuilder
     {
-        $this->queryParameters = $this->queryParameters ?? new ExtendedQueryParameters();
         $this->queryParameters->setFilters($filters);
 
         return $this;

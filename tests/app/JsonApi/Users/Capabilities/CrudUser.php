@@ -38,6 +38,7 @@ class CrudUser extends Crud
      */
     public function __construct(UserStorage $storage)
     {
+        parent::__construct();
         $this->storage = $storage;
     }
 
