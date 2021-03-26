@@ -73,6 +73,19 @@ class SiteStorage implements Countable
     }
 
     /**
+     * Find sites by their slugs.
+     *
+     * @param array $slugs
+     * @return array
+     */
+    public function findMany(array $slugs): array
+    {
+        return collect($slugs)->map(
+            fn($slug) => $this->find($slug)
+        )->filter()->values()->all();
+    }
+
+    /**
      * Does a site exist for the supplied slug?
      *
      * @param string $slug

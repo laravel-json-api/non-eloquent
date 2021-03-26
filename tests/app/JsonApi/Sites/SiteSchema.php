@@ -27,6 +27,7 @@ use LaravelJsonApi\NonEloquent\Fields\Attribute;
 use LaravelJsonApi\NonEloquent\Fields\ID;
 use LaravelJsonApi\NonEloquent\Fields\ToMany;
 use LaravelJsonApi\NonEloquent\Fields\ToOne;
+use LaravelJsonApi\NonEloquent\Filters\Filter;
 use LaravelJsonApi\NonEloquent\Pagination\EnumerablePagination;
 
 class SiteSchema extends Schema
@@ -50,6 +51,17 @@ class SiteSchema extends Schema
             Attribute::make('name'),
             ToOne::make('owner')->type('users'),
             ToMany::make('tags'),
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function filters(): iterable
+    {
+        return [
+            Filter::make('slug'),
+            Filter::make('slugs'),
         ];
     }
 

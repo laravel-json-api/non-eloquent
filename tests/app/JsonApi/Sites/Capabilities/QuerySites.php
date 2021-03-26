@@ -19,12 +19,15 @@ declare(strict_types=1);
 
 namespace App\JsonApi\Sites\Capabilities;
 
+use App\Entities\Site;
 use App\Entities\SiteStorage;
 use LaravelJsonApi\Contracts\Store\HasPagination;
+use LaravelJsonApi\Contracts\Store\HasSingularFilters;
+use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
 use LaravelJsonApi\NonEloquent\Capabilities\QueryAll;
 use LaravelJsonApi\NonEloquent\Concerns\PaginatesEnumerables;
 
-class QuerySites extends QueryAll implements HasPagination
+class QuerySites extends QueryAll implements HasPagination, HasSingularFilters
 {
 
     use PaginatesEnumerables;
@@ -42,6 +45,7 @@ class QuerySites extends QueryAll implements HasPagination
     public function __construct(SiteStorage $sites)
     {
         $this->sites = $sites;
+        $this->queryParameters = new ExtendedQueryParameters();
     }
 
     /**
@@ -49,7 +53,41 @@ class QuerySites extends QueryAll implements HasPagination
      */
     public function get(): iterable
     {
-        return $this->sites->get();
+        $sites = $this->sites->get();
+        $filters = $this->queryParameters->filter();
+
+        if ($filters && $slugs = $filters->get('slugs')) {
+            $slugs = collect($slugs->value());
+            $sites = $sites->filter(fn(Site $site) => $slugs->contains($site->getSlug()));
+        }
+
+        return $sites->values();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function firstOrMany()
+    {
+        $filters = $this->queryParameters->filter();
+
+        if ($filters && $slug = $filters->get('slug')) {
+            return $this->sites->find($slug->value());
+        }
+
+        return $this->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function firstOrPaginate(?array $page)
+    {
+        if (!empty($page)) {
+            return $this->paginate($page);
+        }
+
+        return $this->firstOrMany();
     }
 
 }

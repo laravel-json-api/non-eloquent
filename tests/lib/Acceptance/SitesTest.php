@@ -73,7 +73,7 @@ class SitesTest extends TestCase
         $actual = $this->store->queryAll('sites')->get();
 
         $this->assertCount(count($sites), $actual);
-        $this->assertEquals($sites->all(), iterator_to_array($actual));
+        $this->assertEquals(array_values($sites->all()), iterator_to_array($actual));
     }
 
     public function testQueryAllWithPagination(): void
@@ -84,7 +84,39 @@ class SitesTest extends TestCase
 
         $this->assertInstanceOf(EnumerablePage::class, $actual);
         $this->assertCount(count($expected), $actual);
-        $this->assertEquals($expected->all(), iterator_to_array($actual));
+        $this->assertEquals(array_values($expected->all()), iterator_to_array($actual));
+    }
+
+    public function testQueryAllWithFilter(): void
+    {
+        $expected = $this->sites()->findMany(['example', 'laravel-json-api']);
+
+        $filters = ['slugs' => ['example', 'laravel-json-api']];
+
+        $actual = $this->store->queryAll('sites')->filter($filters)->get();
+
+        $this->assertCount(2, $actual);
+        $this->assertEquals($expected, iterator_to_array($actual));
+    }
+
+    public function testQueryWithSingularFilter(): void
+    {
+        $expected = $this->sites()->find('laravel-json-api');
+
+        $filters = ['slug' => 'laravel-json-api'];
+
+        $actual = $this->store->queryAll('sites')->filter($filters)->firstOrMany();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testQueryWithSingularFilterReturnsNull(): void
+    {
+        $filters = ['slug' => 'unexpected'];
+
+        $actual = $this->store->queryAll('sites')->filter($filters)->firstOrMany();
+
+        $this->assertNull($actual);
     }
 
     public function testQueryOne(): void

@@ -76,7 +76,7 @@ class EnumerablePage extends AbstractPage
      */
     public function __construct(Enumerable $allItems, int $pageNumber, int $perPage, string $path)
     {
-        $this->items = $allItems->forPage($pageNumber, $perPage);
+        $this->items = $allItems->forPage($pageNumber, $perPage)->values();
         $this->pageNumber = $pageNumber;
         $this->perPage = $perPage;
         $this->total = $allItems->count();

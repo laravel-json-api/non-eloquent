@@ -129,7 +129,7 @@ class EnumerablePaginationTest extends TestCase
         $page = $this->paginator->paginate($this->items, ['number' => '2', 'size' => '5']);
 
         $this->assertInstanceOf(EnumerablePage::class, $page);
-        $this->assertEquals($this->items->forPage(2, 5)->all(), iterator_to_array($page));
+        $this->assertEquals($this->items->forPage(2, 5)->values()->all(), iterator_to_array($page));
         $this->assertEquals(['page' => $meta], $page->meta());
         $this->assertEquals($links, $page->links()->toArray());
     }
@@ -166,7 +166,7 @@ class EnumerablePaginationTest extends TestCase
         $page = $this->paginator->paginate($this->items, ['number' => '3', 'size' => '5']);
 
         $this->assertInstanceOf(EnumerablePage::class, $page);
-        $this->assertEquals($this->items->forPage(3, 5)->all(), iterator_to_array($page));
+        $this->assertEquals($this->items->forPage(3, 5)->values()->all(), iterator_to_array($page));
         $this->assertEquals(['page' => $meta], $page->meta());
         $this->assertEquals($links, $page->links()->toArray());
     }
