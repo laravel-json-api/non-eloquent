@@ -43,16 +43,6 @@ class EnumerablePagination implements Paginator
     }
 
     /**
-     * EnumerablePagination constructor.
-     */
-    public function __construct()
-    {
-        $this->pageKey = 'number';
-        $this->perPageKey = 'size';
-        $this->metaKey = 'page';
-    }
-
-    /**
      * Paginate the provided items using JSON:API page parameters.
      *
      * @param Enumerable|iterable $allItems
