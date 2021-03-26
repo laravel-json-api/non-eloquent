@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Tests\Integration;
+namespace LaravelJsonApi\NonEloquent\Tests\Acceptance;
 
 use App\Entities\SiteStorage;
 use App\Entities\TagStorage;
