@@ -34,7 +34,7 @@ class CrudSite extends CrudResource
     private SiteStorage $storage;
 
     /**
-     * CreateSite constructor.
+     * CrudSite constructor.
      *
      * @param SiteStorage $storage
      */

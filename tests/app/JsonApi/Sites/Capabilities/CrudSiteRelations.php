@@ -66,6 +66,10 @@ class CrudSiteRelations extends CrudRelations
      */
     public function setTags(Site $site, array $tags): void
     {
+        $tags = collect($tags)->unique(
+            fn(Tag $tag) => $tag->getSlug()
+        );
+
         $site->setTags(...$tags);
 
         $this->storage->store($site);
@@ -81,7 +85,7 @@ class CrudSiteRelations extends CrudRelations
     {
         $all = collect($site->getTags())
             ->merge($tags)
-            ->unique(fn (Tag $tag) => $tag->getSlug());
+            ->unique(fn(Tag $tag) => $tag->getSlug());
 
         $site->setTags(...$all);
 
@@ -101,7 +105,8 @@ class CrudSiteRelations extends CrudRelations
             ->map(fn(Tag $tag) => $tag->getSlug());
 
         $all = collect($site->getTags())
-            ->reject(fn(Tag $tag) => $remove->contains($tag->getSlug()));
+            ->reject(fn(Tag $tag) => $remove->contains($tag->getSlug()))
+            ->unique(fn(Tag $tag) => $tag->getSlug());
 
         $site->setTags(...$all);
 

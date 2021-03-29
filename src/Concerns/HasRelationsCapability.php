@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\NonEloquent\Concerns;
 
+use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
+use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\ToManyBuilder;
 use LaravelJsonApi\Contracts\Store\ToOneBuilder;
 use LaravelJsonApi\NonEloquent\Capabilities\CrudRelations;
@@ -34,12 +36,32 @@ trait HasRelationsCapability
     /**
      * @inheritDoc
      */
+    public function queryToOne($modelOrResourceId, string $fieldName): QueryOneBuilder
+    {
+        return $this
+            ->usingRelations()
+            ->withModelOrResourceId($modelOrResourceId)
+            ->withFieldName($fieldName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function queryToMany($modelOrResourceId, string $fieldName): QueryManyBuilder
+    {
+        return $this
+            ->usingRelations()
+            ->withModelOrResourceId($modelOrResourceId)
+            ->withFieldName($fieldName);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function modifyToOne($modelOrResourceId, string $fieldName): ToOneBuilder
     {
-        return $this->relations()
-            ->maybeWithServer($this->server)
-            ->maybeWithSchema($this->schema)
-            ->withRepository($this)
+        return $this
+            ->usingRelations()
             ->withModelOrResourceId($modelOrResourceId)
             ->withFieldName($fieldName);
     }
@@ -49,12 +71,22 @@ trait HasRelationsCapability
      */
     public function modifyToMany($modelOrResourceId, string $fieldName): ToManyBuilder
     {
-        return $this->relations()
-            ->maybeWithServer($this->server)
-            ->maybeWithSchema($this->schema)
-            ->withRepository($this)
+        return $this
+            ->usingRelations()
             ->withModelOrResourceId($modelOrResourceId)
             ->withFieldName($fieldName);
+    }
+
+    /**
+     * @return CrudRelations
+     */
+    private function usingRelations(): CrudRelations
+    {
+        return $this
+            ->relations()
+            ->maybeWithServer($this->server)
+            ->maybeWithSchema($this->schema)
+            ->withRepository($this);
     }
 
 }
