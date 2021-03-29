@@ -20,18 +20,18 @@ declare(strict_types=1);
 namespace App\JsonApi\Sites;
 
 use App\Entities\SiteStorage;
+use App\JsonApi\Sites\Capabilities\CreateSite;
+use App\JsonApi\Sites\Capabilities\ModifySite;
 use App\JsonApi\Sites\Capabilities\ModifySiteRelationships;
+use App\JsonApi\Sites\Capabilities\QuerySite;
+use App\JsonApi\Sites\Capabilities\QuerySites;
 use LaravelJsonApi\Contracts\Store\CreatesResources;
 use LaravelJsonApi\Contracts\Store\DeletesResources;
 use LaravelJsonApi\Contracts\Store\ModifiesToMany;
 use LaravelJsonApi\Contracts\Store\ModifiesToOne;
 use LaravelJsonApi\Contracts\Store\QueriesAll;
-use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
-use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
-use LaravelJsonApi\Contracts\Store\ResourceBuilder;
 use LaravelJsonApi\Contracts\Store\UpdatesResources;
 use LaravelJsonApi\NonEloquent\AbstractRepository;
-use LaravelJsonApi\NonEloquent\Capabilities\ModifyRelations;
 use LaravelJsonApi\NonEloquent\Concerns\HasModifyRelationsCapability;
 
 class SiteRepository extends AbstractRepository implements
@@ -71,9 +71,9 @@ class SiteRepository extends AbstractRepository implements
     /**
      * @inheritDoc
      */
-    public function queryAll(): QueryManyBuilder
+    public function queryAll(): QuerySites
     {
-        return Capabilities\QuerySites::make()
+        return QuerySites::make()
             ->withServer($this->server())
             ->withSchema($this->schema());
     }
@@ -81,9 +81,9 @@ class SiteRepository extends AbstractRepository implements
     /**
      * @inheritDoc
      */
-    public function queryOne($modelOrResourceId): QueryOneBuilder
+    public function queryOne($modelOrResourceId): QuerySite
     {
-        return Capabilities\QuerySite::make()
+        return QuerySite::make()
             ->withServer($this->server())
             ->withSchema($this->schema())
             ->withRepository($this)
@@ -93,9 +93,9 @@ class SiteRepository extends AbstractRepository implements
     /**
      * @inheritDoc
      */
-    public function create(): ResourceBuilder
+    public function create(): CreateSite
     {
-        return Capabilities\CreateSite::make()
+        return CreateSite::make()
             ->withServer($this->server())
             ->withSchema($this->schema());
     }
@@ -103,9 +103,9 @@ class SiteRepository extends AbstractRepository implements
     /**
      * @inheritDoc
      */
-    public function update($modelOrResourceId): ResourceBuilder
+    public function update($modelOrResourceId): ModifySite
     {
-        return Capabilities\ModifySite::make()
+        return ModifySite::make()
             ->withServer($this->server())
             ->withSchema($this->schema())
             ->withRepository($this)
@@ -123,7 +123,7 @@ class SiteRepository extends AbstractRepository implements
     /**
      * @inheritDoc
      */
-    protected function relations(): ModifyRelations
+    protected function relations(): ModifySiteRelationships
     {
         return ModifySiteRelationships::make();
     }

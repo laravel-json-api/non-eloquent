@@ -181,7 +181,7 @@ class SitesTest extends TestCase
         $expected = $this->sites()->find('google');
         $expected->setName('Google (UK)');
         $expected->setDomain('google.co.uk');
-        $expected->setTags(...$tags);
+        $expected->setTags(...array_values($tags));
 
         $actual = $this->store->update('sites', 'google')->store([
             'domain' => $expected->getDomain(),

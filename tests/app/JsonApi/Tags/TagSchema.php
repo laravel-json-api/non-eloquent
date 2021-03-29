@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace App\JsonApi\Tags;
 
 use App\Entities\Tag;
-use LaravelJsonApi\Contracts\Store\Repository;
 use LaravelJsonApi\Core\Schema\Schema;
 use LaravelJsonApi\NonEloquent\Fields\Attribute;
 use LaravelJsonApi\NonEloquent\Fields\ID;
@@ -50,7 +49,7 @@ class TagSchema extends Schema
     /**
      * @inheritDoc
      */
-    public function repository(): Repository
+    public function repository(): TagRepository
     {
         return TagRepository::make()
             ->withServer($this->server);

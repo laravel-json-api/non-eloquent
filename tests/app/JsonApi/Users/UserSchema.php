@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace App\JsonApi\Users;
 
 use App\Entities\User;
-use LaravelJsonApi\Contracts\Store\Repository;
 use LaravelJsonApi\Core\Schema\Schema;
 use LaravelJsonApi\NonEloquent\Fields\Attribute;
 use LaravelJsonApi\NonEloquent\Fields\ID;
@@ -50,7 +49,7 @@ class UserSchema extends Schema
     /**
      * @inheritDoc
      */
-    public function repository(): Repository
+    public function repository(): UserRepository
     {
         return UserRepository::make()
             ->withServer($this->server);
