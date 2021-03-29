@@ -99,7 +99,7 @@ class SitesTest extends TestCase
         $this->assertEquals($expected, iterator_to_array($actual));
     }
 
-    public function testQueryWithSingularFilter(): void
+    public function testQueryAllWithSingularFilter(): void
     {
         $expected = $this->sites()->find('laravel-json-api');
 
@@ -110,7 +110,7 @@ class SitesTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testQueryWithSingularFilterReturnsNull(): void
+    public function testQueryAllWithSingularFilterReturnsNull(): void
     {
         $filters = ['slug' => 'unexpected'];
 
@@ -126,6 +126,25 @@ class SitesTest extends TestCase
         $this->assertInstanceOf(Site::class, $actual);
         $this->assertSame($actual, $this->store->queryOne('sites', $actual)->first());
         $this->assertNull($this->store->queryOne('sites', 'foobar')->first());
+    }
+
+    public function testQueryOneWithFilter(): void
+    {
+        $expected = $this->sites()->find('example');
+
+        $actual = $this->store
+            ->queryOne('sites', $expected->getSlug())
+            ->filter(['name' => 'Example'])
+            ->first();
+
+        $this->assertEquals($expected, $actual);
+
+        $actual = $this->store
+            ->queryOne('sites', $expected)
+            ->filter(['name' => 'Google'])
+            ->first();
+
+        $this->assertNull($actual);
     }
 
     public function testCreate(): void

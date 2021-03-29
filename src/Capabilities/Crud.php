@@ -48,7 +48,7 @@ abstract class Crud extends Capability implements QueryOneBuilder, ResourceBuild
     {
         $model = $this->model();
 
-        if (method_exists($this, 'read')) {
+        if ($model && method_exists($this, 'read')) {
             return $this->read($model);
         }
 

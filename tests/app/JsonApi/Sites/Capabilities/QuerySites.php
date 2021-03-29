@@ -71,8 +71,10 @@ class QuerySites extends QueryAll implements HasPagination, HasSingularFilters
     {
         $filters = $this->queryParameters->filter();
 
-        if ($filters && $slug = $filters->get('slug')) {
-            return $this->sites->find($slug->value());
+        if ($filters && $filters->exists('slug')) {
+            return $this->sites->find(
+                $filters->value('slug')
+            );
         }
 
         return $this->get();
@@ -83,11 +85,11 @@ class QuerySites extends QueryAll implements HasPagination, HasSingularFilters
      */
     public function firstOrPaginate(?array $page)
     {
-        if (!empty($page)) {
-            return $this->paginate($page);
+        if (empty($page)) {
+            return $this->firstOrMany();
         }
 
-        return $this->firstOrMany();
+        return $this->paginate($page);
     }
 
 }

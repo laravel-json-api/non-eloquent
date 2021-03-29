@@ -27,6 +27,7 @@ use LaravelJsonApi\Contracts\Store\ModifiesToMany;
 use LaravelJsonApi\Contracts\Store\ModifiesToOne;
 use LaravelJsonApi\Contracts\Store\QueriesAll;
 use LaravelJsonApi\Contracts\Store\QueryManyBuilder;
+use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\ResourceBuilder;
 use LaravelJsonApi\Contracts\Store\UpdatesResources;
 use LaravelJsonApi\NonEloquent\AbstractRepository;
@@ -75,6 +76,18 @@ class SiteRepository extends AbstractRepository implements
         return Capabilities\QuerySites::make()
             ->withServer($this->server())
             ->withSchema($this->schema());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function queryOne($modelOrResourceId): QueryOneBuilder
+    {
+        return Capabilities\QuerySite::make()
+            ->withServer($this->server())
+            ->withSchema($this->schema())
+            ->withRepository($this)
+            ->withModelOrResourceId($modelOrResourceId);
     }
 
     /**

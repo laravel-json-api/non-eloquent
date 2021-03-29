@@ -17,38 +17,29 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\NonEloquent\Capabilities;
+namespace App\JsonApi\Sites\Capabilities;
 
-use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
-use LaravelJsonApi\NonEloquent\Concerns\HasModelOrResourceId;
+use App\Entities\Site;
+use LaravelJsonApi\Core\Support\Str;
+use LaravelJsonApi\NonEloquent\Capabilities\QueryOne;
 
-class QueryOne extends Capability implements QueryOneBuilder
+class QuerySite extends QueryOne
 {
 
-    use HasModelOrResourceId;
-
     /**
-     * @inheritDoc
+     * Read the supplied site.
+     *
+     * @param Site $site
+     * @return Site|null
      */
-    public function filter(?array $filters): QueryOneBuilder
+    public function read(Site $site): ?Site
     {
-        $this->queryParameters->setFilters($filters);
+        $filters = $this->queryParameters->filter();
 
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function first(): ?object
-    {
-        $model = $this->model();
-
-        if ($model && method_exists($this, 'read')) {
-            return $this->read($model);
+        if ($filters && $name = $filters->value('name')) {
+            return Str::contains($site->getName(), $name) ? $site : null;
         }
 
-        return $model;
+        return $site;
     }
-
 }
