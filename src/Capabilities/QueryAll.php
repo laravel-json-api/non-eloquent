@@ -27,7 +27,7 @@ abstract class QueryAll extends Capability implements QueryManyBuilder
     /**
      * @inheritDoc
      */
-    public function filter(?array $filters): QueryManyBuilder
+    public function filter(?array $filters): QueryAll
     {
         $this->queryParameters->setFilters($filters);
 
@@ -37,7 +37,7 @@ abstract class QueryAll extends Capability implements QueryManyBuilder
     /**
      * @inheritDoc
      */
-    public function sort($fields): QueryManyBuilder
+    public function sort($fields): QueryAll
     {
         $this->queryParameters->setSortFields($fields);
 

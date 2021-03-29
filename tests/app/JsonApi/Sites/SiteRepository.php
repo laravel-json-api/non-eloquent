@@ -20,10 +20,8 @@ declare(strict_types=1);
 namespace App\JsonApi\Sites;
 
 use App\Entities\SiteStorage;
-use App\JsonApi\Sites\Capabilities\CreateSite;
-use App\JsonApi\Sites\Capabilities\ModifySite;
-use App\JsonApi\Sites\Capabilities\ModifySiteRelationships;
-use App\JsonApi\Sites\Capabilities\QuerySite;
+use App\JsonApi\Sites\Capabilities\CrudSite;
+use App\JsonApi\Sites\Capabilities\CrudSiteRelations;
 use App\JsonApi\Sites\Capabilities\QuerySites;
 use LaravelJsonApi\Contracts\Store\CreatesResources;
 use LaravelJsonApi\Contracts\Store\DeletesResources;
@@ -32,7 +30,8 @@ use LaravelJsonApi\Contracts\Store\ModifiesToOne;
 use LaravelJsonApi\Contracts\Store\QueriesAll;
 use LaravelJsonApi\Contracts\Store\UpdatesResources;
 use LaravelJsonApi\NonEloquent\AbstractRepository;
-use LaravelJsonApi\NonEloquent\Concerns\HasModifyRelationsCapability;
+use LaravelJsonApi\NonEloquent\Concerns\HasCrudCapability;
+use LaravelJsonApi\NonEloquent\Concerns\HasRelationsCapability;
 
 class SiteRepository extends AbstractRepository implements
     QueriesAll,
@@ -43,7 +42,8 @@ class SiteRepository extends AbstractRepository implements
     ModifiesToMany
 {
 
-    use HasModifyRelationsCapability;
+    use HasCrudCapability;
+    use HasRelationsCapability;
 
     /**
      * @var SiteStorage
@@ -81,51 +81,17 @@ class SiteRepository extends AbstractRepository implements
     /**
      * @inheritDoc
      */
-    public function queryOne($modelOrResourceId): QuerySite
+    protected function crud(): CrudSite
     {
-        return QuerySite::make()
-            ->withServer($this->server())
-            ->withSchema($this->schema())
-            ->withRepository($this)
-            ->withModelOrResourceId($modelOrResourceId);
+        return CrudSite::make($this->storage);
     }
 
     /**
      * @inheritDoc
      */
-    public function create(): CreateSite
+    protected function relations(): CrudSiteRelations
     {
-        return CreateSite::make()
-            ->withServer($this->server())
-            ->withSchema($this->schema());
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function update($modelOrResourceId): ModifySite
-    {
-        return ModifySite::make()
-            ->withServer($this->server())
-            ->withSchema($this->schema())
-            ->withRepository($this)
-            ->withModelOrResourceId($modelOrResourceId);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete($modelOrResourceId): void
-    {
-        $this->storage->remove($modelOrResourceId);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function relations(): ModifySiteRelationships
-    {
-        return ModifySiteRelationships::make();
+        return CrudSiteRelations::make($this->storage);
     }
 
 }

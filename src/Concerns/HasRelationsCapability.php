@@ -21,15 +21,15 @@ namespace LaravelJsonApi\NonEloquent\Concerns;
 
 use LaravelJsonApi\Contracts\Store\ToManyBuilder;
 use LaravelJsonApi\Contracts\Store\ToOneBuilder;
-use LaravelJsonApi\NonEloquent\Capabilities\ModifyRelations;
+use LaravelJsonApi\NonEloquent\Capabilities\CrudRelations;
 
-trait HasModifyRelationsCapability
+trait HasRelationsCapability
 {
 
     /**
-     * @return ModifyRelations
+     * @return CrudRelations
      */
-    abstract protected function relations(): ModifyRelations;
+    abstract protected function relations(): CrudRelations;
 
     /**
      * @inheritDoc

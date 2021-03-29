@@ -69,7 +69,7 @@ abstract class Capability implements Builder
     /**
      * @inheritDoc
      */
-    public function withRequest(Request $request): Builder
+    public function withRequest(Request $request): Capability
     {
         $this->request = $request;
         $this->queryParameters = ExtendedQueryParameters::cast($request);
@@ -80,7 +80,7 @@ abstract class Capability implements Builder
     /**
      * @inheritDoc
      */
-    public function withQuery(QueryParameters $query): Builder
+    public function withQuery(QueryParameters $query): Capability
     {
         $this->queryParameters = ExtendedQueryParameters::cast($query);
 
@@ -90,7 +90,7 @@ abstract class Capability implements Builder
     /**
      * @inheritDoc
      */
-    public function with($includePaths): Builder
+    public function with($includePaths): Capability
     {
         $this->queryParameters->setIncludePaths($includePaths);
 

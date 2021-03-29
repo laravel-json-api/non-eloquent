@@ -22,9 +22,10 @@ namespace App\JsonApi\Sites\Capabilities;
 use App\Entities\Site;
 use App\Entities\SiteStorage;
 use App\Entities\User;
-use LaravelJsonApi\NonEloquent\Capabilities\CreateResource;
+use LaravelJsonApi\Core\Support\Str;
+use LaravelJsonApi\NonEloquent\Capabilities\CrudResource;
 
-class CreateSite extends CreateResource
+class CrudSite extends CrudResource
 {
 
     /**
@@ -66,4 +67,61 @@ class CreateSite extends CreateResource
         return $site;
     }
 
+    /**
+     * Read the supplied site.
+     *
+     * @param Site $site
+     * @return Site|null
+     */
+    public function read(Site $site): ?Site
+    {
+        $filters = $this->queryParameters->filter();
+
+        if ($filters && $name = $filters->value('name')) {
+            return Str::contains($site->getName(), $name) ? $site : null;
+        }
+
+        return $site;
+    }
+
+    /**
+     * Update the site.
+     *
+     * @param Site $site
+     * @param array $validatedData
+     * @return Site
+     */
+    public function update(Site $site, array $validatedData): Site
+    {
+        if (array_key_exists('domain', $validatedData)) {
+            $site->setDomain($validatedData['domain']);
+        }
+
+        if (array_key_exists('name', $validatedData)) {
+            $site->setName($validatedData['name']);
+        }
+
+        if (array_key_exists('owner', $validatedData)) {
+            $site->setOwner($this->toOne($validatedData['owner']));
+        }
+
+        if (isset($validatedData['tags'])) {
+            $site->setTags(...$this->toMany($validatedData['tags']));
+        }
+
+        $this->storage->store($site);
+
+        return $site;
+    }
+
+    /**
+     * Delete the site.
+     *
+     * @param Site $site
+     * @return void
+     */
+    public function delete(Site $site): void
+    {
+        $this->storage->remove($site);
+    }
 }

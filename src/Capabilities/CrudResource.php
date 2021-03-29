@@ -26,7 +26,7 @@ use LogicException;
 use function method_exists;
 use function sprintf;
 
-abstract class Crud extends Capability implements QueryOneBuilder, ResourceBuilder
+abstract class CrudResource extends Capability implements QueryOneBuilder, ResourceBuilder
 {
 
     use HasModelOrResourceId;
@@ -34,7 +34,7 @@ abstract class Crud extends Capability implements QueryOneBuilder, ResourceBuild
     /**
      * @inheritDoc
      */
-    public function filter(?array $filters): QueryOneBuilder
+    public function filter(?array $filters): CrudResource
     {
         $this->queryParameters->setFilters($filters);
 
@@ -72,7 +72,7 @@ abstract class Crud extends Capability implements QueryOneBuilder, ResourceBuild
         }
 
         throw new LogicException(sprintf(
-            'Expecting %s method to exist on CRUD capability.',
+            'Expecting %s method to exist on CRUD resource capability.',
             $hasModel ? 'update' : 'create',
         ));
     }

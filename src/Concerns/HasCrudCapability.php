@@ -21,17 +21,17 @@ namespace LaravelJsonApi\NonEloquent\Concerns;
 
 use LaravelJsonApi\Contracts\Store\QueryOneBuilder;
 use LaravelJsonApi\Contracts\Store\ResourceBuilder;
-use LaravelJsonApi\NonEloquent\Capabilities\Crud;
+use LaravelJsonApi\NonEloquent\Capabilities\CrudResource;
 
 trait HasCrudCapability
 {
 
     /**
-     * Get the CRUD capability.
+     * Get the CRUD resource capability.
      *
-     * @return Crud
+     * @return CrudResource
      */
-    abstract protected function crud(): Crud;
+    abstract protected function crud(): CrudResource;
 
     /**
      * @inheritDoc
@@ -72,9 +72,9 @@ trait HasCrudCapability
     }
 
     /**
-     * @return Crud
+     * @return CrudResource
      */
-    private function usingCrud(): Crud
+    private function usingCrud(): CrudResource
     {
         return $this->crud()
             ->maybeWithServer($this->server)

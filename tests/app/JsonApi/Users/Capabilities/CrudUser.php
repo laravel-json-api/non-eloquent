@@ -21,9 +21,9 @@ namespace App\JsonApi\Users\Capabilities;
 
 use App\Entities\User;
 use App\Entities\UserStorage;
-use LaravelJsonApi\NonEloquent\Capabilities\Crud;
+use LaravelJsonApi\NonEloquent\Capabilities\CrudResource;
 
-class CrudUser extends Crud
+class CrudUser extends CrudResource
 {
 
     /**

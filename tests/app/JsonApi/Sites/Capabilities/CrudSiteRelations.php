@@ -23,9 +23,9 @@ use App\Entities\Site;
 use App\Entities\SiteStorage;
 use App\Entities\Tag;
 use App\Entities\User;
-use LaravelJsonApi\NonEloquent\Capabilities\ModifyRelations;
+use LaravelJsonApi\NonEloquent\Capabilities\CrudRelations;
 
-class ModifySiteRelationships extends ModifyRelations
+class CrudSiteRelations extends CrudRelations
 {
 
     /**
