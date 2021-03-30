@@ -26,7 +26,7 @@ use LogicException;
 use function method_exists;
 use function sprintf;
 
-abstract class CrudResource extends Capability implements QueryOneBuilder, ResourceBuilder
+class CrudResource extends Capability implements QueryOneBuilder, ResourceBuilder
 {
 
     use HasModelOrResourceId;
@@ -91,7 +91,7 @@ abstract class CrudResource extends Capability implements QueryOneBuilder, Resou
             return;
         }
 
-        throw new LogicException('Expecting delete method to exist on CRUD capability.');
+        throw new LogicException('Expecting delete method to exist on CRUD resource capability.');
     }
 
 }
