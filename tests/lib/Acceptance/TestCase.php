@@ -27,11 +27,11 @@ use App\JsonApi\Tags\TagSchema;
 use App\JsonApi\Users\UserSchema;
 use LaravelJsonApi\Contracts\Resources\Container as ResourceContainerContract;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainerContract;
+use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Contracts\Store\Store as StoreContract;
 use LaravelJsonApi\Core\Resources\Container as ResourceContainer;
 use LaravelJsonApi\Core\Resources\Factory;
 use LaravelJsonApi\Core\Schema\Container as SchemaContainer;
-use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Core\Store\Store;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
