@@ -24,7 +24,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "laravel-json-api/core": "^1.0.0-beta.1"
+        "laravel-json-api/core": "^1.0.0"
     },
     "require-dev": {
         "orchestra/testbench": "^6.15",
@@ -46,7 +46,7 @@
             "dev-develop": "1.x-dev"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
