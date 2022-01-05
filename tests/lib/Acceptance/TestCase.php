@@ -25,6 +25,7 @@ use App\Entities\UserStorage;
 use App\JsonApi\Sites\SiteSchema;
 use App\JsonApi\Tags\TagSchema;
 use App\JsonApi\Users\UserSchema;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithDeprecationHandling;
 use LaravelJsonApi\Contracts\Resources\Container as ResourceContainerContract;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainerContract;
 use LaravelJsonApi\Contracts\Server\Server;
@@ -37,6 +38,7 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
+    use InteractsWithDeprecationHandling;
 
     /**
      * @return void
@@ -44,6 +46,8 @@ class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->withoutDeprecationHandling();
 
         $this->app->singleton(SiteStorage::class, fn() => new SiteStorage(
             $this->app->make(UserStorage::class),
