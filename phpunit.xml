@@ -8,6 +8,7 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
+         convertDeprecationsToExceptions="true"
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
@@ -30,4 +31,7 @@
             <directory suffix="Test.php">./tests/lib/Acceptance/</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <ini name="error_reporting" value="E_ALL"/>
+    </php>
 </phpunit>

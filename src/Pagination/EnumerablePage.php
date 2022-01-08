@@ -22,6 +22,7 @@ namespace LaravelJsonApi\NonEloquent\Pagination;
 use Illuminate\Support\Enumerable;
 use LaravelJsonApi\Core\Document\Link;
 use LaravelJsonApi\Core\Pagination\AbstractPage;
+use Traversable;
 
 class EnumerablePage extends AbstractPage
 {
@@ -219,7 +220,7 @@ class EnumerablePage extends AbstractPage
     /**
      * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         yield from $this->items;
     }
@@ -227,7 +228,7 @@ class EnumerablePage extends AbstractPage
     /**
      * @inheritDoc
      */
-    public function count()
+    public function count(): int
     {
         return $this->items->count();
     }
