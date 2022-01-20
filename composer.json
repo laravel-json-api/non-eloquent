@@ -27,7 +27,7 @@
         "laravel-json-api/core": "^2.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^6.23",
+        "orchestra/testbench": "^6.23|^7.0",
         "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
