@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2021 Cloud Creativity Limited
+ * Copyright 2022 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ use App\Entities\UserStorage;
 use App\JsonApi\Sites\SiteSchema;
 use App\JsonApi\Tags\TagSchema;
 use App\JsonApi\Users\UserSchema;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithDeprecationHandling;
 use LaravelJsonApi\Contracts\Resources\Container as ResourceContainerContract;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainerContract;
 use LaravelJsonApi\Contracts\Server\Server;
@@ -33,10 +34,12 @@ use LaravelJsonApi\Core\Resources\Container as ResourceContainer;
 use LaravelJsonApi\Core\Resources\Factory;
 use LaravelJsonApi\Core\Schema\Container as SchemaContainer;
 use LaravelJsonApi\Core\Store\Store;
+use LaravelJsonApi\Core\Support\ContainerResolver;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
+    use InteractsWithDeprecationHandling;
 
     /**
      * @return void
@@ -45,28 +48,30 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->app->singleton(SiteStorage::class, fn() => new SiteStorage(
-            $this->app->make(UserStorage::class),
-            $this->app->make(TagStorage::class),
+        $this->withoutDeprecationHandling();
+
+        $this->app->singleton(SiteStorage::class, static fn($container) => new SiteStorage(
+            $container->make(UserStorage::class),
+            $container->make(TagStorage::class),
             require __DIR__ . '/../../storage/sites.php'
         ));
 
-        $this->app->singleton(UserStorage::class, fn() => new UserStorage(
+        $this->app->singleton(UserStorage::class, static fn() => new UserStorage(
             require __DIR__ . '/../../storage/users.php'
         ));
 
-        $this->app->singleton(TagStorage::class, fn() => new TagStorage(
+        $this->app->singleton(TagStorage::class, static fn() => new TagStorage(
             require __DIR__ . '/../../storage/tags.php'
         ));
 
-        $this->app->singleton(
-            SchemaContainerContract::class,
-            fn() => new SchemaContainer($this->app, $this->app->make(Server::class), [
+        $this->app->singleton(SchemaContainerContract::class, static function ($container) {
+            $resolver = new ContainerResolver(static fn () => $container);
+            return new SchemaContainer($resolver, $container->make(Server::class), [
                 SiteSchema::class,
                 TagSchema::class,
                 UserSchema::class,
-            ]),
-        );
+            ]);
+        });
 
         $this->app->singleton(Server::class, function () {
             $server = $this->createMock(Server::class);
