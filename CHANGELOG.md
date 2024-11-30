@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.1.0] - 2024-11-30
+
+### Added
+
+- Allow `laravel-json-api/core` v4 or v5.
+
+### Fixed
+
+- Remove deprecation notices for PHP 8.4.
+
 ## [4.0.0] - 2024-03-14
 
 ### Changed

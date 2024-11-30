@@ -24,7 +24,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "laravel-json-api/core": "^4.0"
+        "laravel-json-api/core": "^4.3.2|^5.0.1"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
