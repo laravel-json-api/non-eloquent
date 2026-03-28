@@ -24,10 +24,10 @@
     ],
     "require": {
         "php": "^8.2",
-        "laravel-json-api/core": "^4.3.2|^5.2"
+        "laravel-json-api/core": "^5.3"
     },
     "require-dev": {
-        "orchestra/testbench": "^9.0|^10.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
         "phpunit/phpunit": "^10.5|^11.0"
     },
     "autoload": {
@@ -46,7 +46,7 @@
             "dev-develop": "4.x-dev"
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
